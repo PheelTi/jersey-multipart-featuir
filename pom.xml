@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jersey-multipart-upload-core-feature</artifactId>
     <groupId>io.github.archytas-it</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <description>Alternative implementation of multipart management for JaxRS implementation Jersey 2.X</description>
     <organization>
         <name>Archytas IT</name>
@@ -37,7 +35,7 @@
         <connection>scm:git:git://github.com/archytas-it/jersey-multipart-upload-core-feature.git</connection>
         <developerConnection>scm:git:git@github.com:archytas-it/jersey-multipart-upload-core-feature.git</developerConnection>
         <url>https://github.com/archytas-it/jersey-multipart-upload-core-feature</url>
-        <tag>HEAD</tag>
+        <tag>jersey-multipart-upload-core-feature-0.0.1</tag>
     </scm>
 
     <profiles>
@@ -144,7 +142,7 @@
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.11.2</version>
+                        <version>1.9.5</version>
                     </dependency>
                 </dependencies>
 
