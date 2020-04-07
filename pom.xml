@@ -4,11 +4,30 @@
     <artifactId>jersey-multipart-upload-core-feature</artifactId>
     <groupId>io.github.archytas-it</groupId>
     <version>0.0.2-SNAPSHOT</version>
-    <description>Alternative implementation of multipart management for JaxRS implementation Jersey 2.X</description>
-    <organization>
-        <name>Archytas IT</name>
-        <url>https://github.com/archytas-it</url>
-    </organization>
+    <name>Jersey Multipart Alternative Core</name>
+    <description>Alternative implementation of multipart management for Jersey 2.X</description>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <url>https://github.com/archytas-it/jersey-multipart-upload-core-feature</url>
+    <developers>
+        <developer>
+            <id>PheelTi</id>
+            <name>Philippe Tulleau</name>
+            <email>philtulleau@gmail.com</email>
+            <organization>Archytas IT</organization>
+            <organizationUrl>https://github.com/archytas-it</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+    </developers>
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
