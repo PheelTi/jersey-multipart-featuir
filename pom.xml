@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jersey-multipart-upload-core-feature</artifactId>
     <groupId>io.github.archytas-it</groupId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Jersey Multipart Alternative Core</name>
     <description>Alternative implementation of multipart management for Jersey 2.X</description>
     <licenses>
@@ -18,7 +18,6 @@
         <developer>
             <id>PheelTi</id>
             <name>Philippe Tulleau</name>
-            <email>philtulleau@gmail.com</email>
             <organization>Archytas IT</organization>
             <organizationUrl>https://github.com/archytas-it</organizationUrl>
             <roles>
