@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jersey-multipart-upload-core-feature</artifactId>
     <groupId>io.github.archytas-it</groupId>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>Jersey Multipart Alternative Core</name>
     <description>Alternative implementation of multipart management for Jersey 2.X</description>
     <licenses>
@@ -53,7 +53,7 @@
         <connection>scm:git:git://github.com/archytas-it/jersey-multipart-upload-core-feature.git</connection>
         <developerConnection>scm:git:git@github.com:archytas-it/jersey-multipart-upload-core-feature.git</developerConnection>
         <url>https://github.com/archytas-it/jersey-multipart-upload-core-feature</url>
-        <tag>jersey-multipart-upload-core-feature-0.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
