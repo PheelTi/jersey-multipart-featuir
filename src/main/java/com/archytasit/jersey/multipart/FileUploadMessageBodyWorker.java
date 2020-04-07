@@ -36,6 +36,9 @@ import com.archytasit.jersey.multipart.utils.InputStreamLimitCounter;
 import com.archytasit.jersey.multipart.model.MultiPart;
 
 
+/**
+ * The type File upload message body worker.
+ */
 @Consumes("multipart/*")
 @Singleton
 @ConstrainedTo(RuntimeType.SERVER)
@@ -55,6 +58,11 @@ public class FileUploadMessageBodyWorker implements MessageBodyReader<MultiPart>
     @Inject
     private IDataBagProvider dataBagProvider;
 
+    /**
+     * Instantiates a new File upload message body worker.
+     *
+     * @param providers the providers
+     */
     @Inject
     public FileUploadMessageBodyWorker(@Context final Providers providers) {
         this.config = getInstanceFromContext(providers, MultiPartConfig.class, MultiPartConfig::new);

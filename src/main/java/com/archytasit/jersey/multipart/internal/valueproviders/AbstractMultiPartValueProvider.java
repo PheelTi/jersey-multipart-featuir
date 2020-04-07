@@ -9,6 +9,11 @@ import org.glassfish.jersey.server.ContainerRequest;
 
 import com.archytasit.jersey.multipart.model.MultiPart;
 
+/**
+ * The type Abstract multi part value provider.
+ *
+ * @param <T> the type parameter
+ */
 public abstract class AbstractMultiPartValueProvider<T> implements Function<ContainerRequest, T> {
 
     @Override
@@ -29,5 +34,12 @@ public abstract class AbstractMultiPartValueProvider<T> implements Function<Cont
 
     }
 
+    /**
+     * Apply t.
+     *
+     * @param request the request
+     * @param entity  the entity
+     * @return the t
+     */
     protected abstract T apply(ContainerRequest request, MultiPart entity);
 }

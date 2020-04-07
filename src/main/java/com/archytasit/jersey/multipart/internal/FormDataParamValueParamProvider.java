@@ -23,8 +23,16 @@ import com.archytasit.jersey.multipart.internal.valueproviders.SingleValueProvid
 import com.archytasit.jersey.multipart.model.MultiPart;
 import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
 
+/**
+ * The type Form data param value param provider.
+ */
 public class FormDataParamValueParamProvider  extends AbstractValueParamProvider {
 
+    /**
+     * Instantiates a new Form data param value param provider.
+     *
+     * @param extractorProvider the extractor provider
+     */
     public FormDataParamValueParamProvider(Provider<MultivaluedParameterExtractorProvider> extractorProvider) {
         super(extractorProvider, Parameter.Source.ENTITY, Parameter.Source.UNKNOWN);
     }

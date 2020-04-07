@@ -7,10 +7,18 @@ import java.io.InputStream;
 
 import com.archytasit.jersey.multipart.model.databags.IDataBag;
 
+/**
+ * The type File data bag.
+ */
 public class FileDataBag implements IDataBag {
 
     private File tempFile;
 
+    /**
+     * Instantiates a new File data bag.
+     *
+     * @param tempFile the temp file
+     */
     public FileDataBag(File tempFile) {
         this.tempFile = tempFile;
     }

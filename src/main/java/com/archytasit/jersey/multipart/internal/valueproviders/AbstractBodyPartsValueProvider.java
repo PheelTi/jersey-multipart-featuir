@@ -24,14 +24,30 @@ import com.archytasit.jersey.multipart.model.MultiPart;
 import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 
+/**
+ * The type Abstract body parts value provider.
+ *
+ * @param <T> the type parameter
+ */
 public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPartValueProvider<T> {
 
 
     private String paramName;
+    /**
+     * The Marker.
+     */
     protected FormDataParam marker;
+    /**
+     * The Parameter.
+     */
     protected Parameter parameter;
     private Predicate<IBodyPart> partNatureFilter;
 
+    /**
+     * Instantiates a new Abstract body parts value provider.
+     *
+     * @param parameter the parameter
+     */
     public AbstractBodyPartsValueProvider(Parameter parameter) {
         this.parameter = parameter;
         if (parameter.getSourceAnnotation().annotationType() == FormDataParam.class) {
@@ -54,9 +70,21 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
         return applyToBodyParts(request, enhancedBodyParts);
     }
 
+    /**
+     * Apply to body parts t.
+     *
+     * @param request           the request
+     * @param enhancedBodyParts the enhanced body parts
+     * @return the t
+     */
     protected abstract T applyToBodyParts(ContainerRequest request, List<IBodyPart> enhancedBodyParts);
 
 
+    /**
+     * Gets parameter name.
+     *
+     * @return the parameter name
+     */
     protected String getParameterName() {
         return paramName;
     }

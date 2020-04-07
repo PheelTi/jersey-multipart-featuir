@@ -7,6 +7,9 @@ import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 
+/**
+ * The type Resource cleaning listener.
+ */
 public class ResourceCleaningListener implements ApplicationEventListener {
 
     @Inject

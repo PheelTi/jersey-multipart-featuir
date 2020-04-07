@@ -6,6 +6,11 @@ import java.io.InputStream;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+/**
+ * The type Abstract body part.
+ *
+ * @param <T> the type parameter
+ */
 abstract class AbstractBodyPart<T> implements IBodyPart<T> {
 
     private String fieldName;
@@ -18,6 +23,15 @@ abstract class AbstractBodyPart<T> implements IBodyPart<T> {
 
     private MultivaluedMap<String, String> headers;
 
+    /**
+     * Instantiates a new Abstract body part.
+     *
+     * @param fieldName     the field name
+     * @param mediaType     the media type
+     * @param headers       the headers
+     * @param contentLength the content length
+     * @param dataBag       the data bag
+     */
     public AbstractBodyPart(String fieldName, MediaType mediaType, MultivaluedMap<String, String> headers, long contentLength, T dataBag) {
         this.fieldName = fieldName;
         this.mediaType = mediaType;
@@ -46,6 +60,13 @@ abstract class AbstractBodyPart<T> implements IBodyPart<T> {
         return getInputStreamFromDataBag(dataBag);
     }
 
+    /**
+     * Gets input stream from data bag.
+     *
+     * @param dataContainer the data container
+     * @return the input stream from data bag
+     * @throws IOException the io exception
+     */
     protected abstract InputStream getInputStreamFromDataBag(T dataContainer) throws IOException ;
 
     public T getDataBag() {

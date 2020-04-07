@@ -26,6 +26,9 @@ import com.archytasit.jersey.multipart.model.bodyparts.IBodyPartProvider;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 import com.archytasit.jersey.multipart.utils.StreamUtils;
 
+/**
+ * The type Apache file upload body part provider.
+ */
 public class ApacheFileUploadBodyPartProvider implements IBodyPartProvider {
 
 

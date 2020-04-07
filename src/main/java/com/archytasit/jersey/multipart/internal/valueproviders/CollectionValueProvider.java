@@ -19,12 +19,21 @@ import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor
 import com.archytasit.jersey.multipart.exception.FormDataParamException;
 import com.archytasit.jersey.multipart.utils.ClassUtils;
 
+/**
+ * The type Collection value provider.
+ */
 public class CollectionValueProvider extends SingleValueProvider {
 
     private Collector streamCollector;
 
     private Class<?> genericTypeArgument;
 
+    /**
+     * Instantiates a new Collection value provider.
+     *
+     * @param parameter the parameter
+     * @param extractor the extractor
+     */
     public CollectionValueProvider(Parameter parameter, MultivaluedParameterExtractor<?> extractor) {
         super(parameter, extractor);
         this.streamCollector = ClassUtils.getStreamCollector(parameter.getRawType());

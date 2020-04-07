@@ -22,12 +22,22 @@ import com.archytasit.jersey.multipart.model.MultiPart;
 import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 
+/**
+ * The type Abstract enhanced body parts value provider.
+ *
+ * @param <T> the type parameter
+ */
 public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends AbstractBodyPartsValueProvider<T> {
 
     private Predicate<EnhancedBodyPart> mediaTypeFilter;
     private Function<IBodyPart, MediaType> mediaTypeConverter;
     private BiFunction<IBodyPart, MediaType, EnhancedBodyPart.ValueExtractionMode> extractionModeSupplier;
 
+    /**
+     * Instantiates a new Abstract enhanced body parts value provider.
+     *
+     * @param parameter the parameter
+     */
     public AbstractEnhancedBodyPartsValueProvider(Parameter parameter) {
         super(parameter);
         this.mediaTypeConverter = prepareMediaTypeConverter(marker.mapContentTypeAs());
@@ -48,6 +58,13 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
         return applyToEnhancedBodyParts(request, enhancedBodyParts);
     }
 
+    /**
+     * Apply to enhanced body parts t.
+     *
+     * @param request           the request
+     * @param enhancedBodyParts the enhanced body parts
+     * @return the t
+     */
     protected abstract T applyToEnhancedBodyParts(ContainerRequest request, List<EnhancedBodyPart> enhancedBodyParts);
 
 
@@ -89,9 +106,21 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
     }
 
     private static class Mapping {
+        /**
+         * The From.
+         */
         MediaType from;
+        /**
+         * The To.
+         */
         MediaType to;
 
+        /**
+         * Instantiates a new Mapping.
+         *
+         * @param from the from
+         * @param to   the to
+         */
         public Mapping(MediaType from, MediaType to) {
             this.from = from;
             this.to = to;

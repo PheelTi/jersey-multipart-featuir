@@ -19,10 +19,22 @@ import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor
 import com.archytasit.jersey.multipart.exception.FormDataParamException;
 import com.archytasit.jersey.multipart.model.bodyparts.FormBodyPart;
 
+/**
+ * The type Single value provider.
+ */
 public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<Object> {
 
+    /**
+     * The Extractor.
+     */
     protected MultivaluedParameterExtractor<?> extractor;
 
+    /**
+     * Instantiates a new Single value provider.
+     *
+     * @param parameter the parameter
+     * @param extractor the extractor
+     */
     public SingleValueProvider(Parameter parameter, MultivaluedParameterExtractor<?> extractor) {
         super(parameter);
         this.extractor = extractor;
@@ -45,6 +57,13 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
     }
 
 
+    /**
+     * Apply extractor object.
+     *
+     * @param bp      the bp
+     * @param workers the workers
+     * @return the object
+     */
     protected Object applyExtractor(Stream<EnhancedBodyPart> bp, MessageBodyWorkers workers) {
         MultivaluedMap paramValuesMap = new NullableMultivaluedHashMap();
         paramValuesMap.addAll(getParameterName(),
@@ -61,11 +80,29 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
         }
     }
 
+    /**
+     * Apply message body worker object.
+     *
+     * @param bodyPart the body part
+     * @param workers  the workers
+     * @return the object
+     */
     protected Object applyMessageBodyWorker(EnhancedBodyPart bodyPart, MessageBodyWorkers workers) {
         return applyMessageBodyWorker(bodyPart, parameter.getRawType(), parameter.getType(), bodyPart.getMappedMediaType(), workers);
     }
 
 
+    /**
+     * Apply message body worker t.
+     *
+     * @param <T>             the type parameter
+     * @param bodyPart        the body part
+     * @param rawType         the raw type
+     * @param type            the type
+     * @param customMediaType the custom media type
+     * @param workers         the workers
+     * @return the t
+     */
     protected <T> T applyMessageBodyWorker(EnhancedBodyPart bodyPart, Class<T> rawType, Type type, MediaType customMediaType, MessageBodyWorkers workers) {
 
         MessageBodyReader<T> bodyReader = workers.getMessageBodyReader(

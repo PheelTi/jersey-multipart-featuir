@@ -10,6 +10,9 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.fileupload.RequestContext;
 
+/**
+ * The type Request context jersey wrapper.
+ */
 public class RequestContextJerseyWrapper implements RequestContext {
 
     private String charset = StandardCharsets.UTF_8.name();
@@ -18,6 +21,13 @@ public class RequestContextJerseyWrapper implements RequestContext {
     private InputStream inputStream;
 
 
+    /**
+     * Instantiates a new Request context jersey wrapper.
+     *
+     * @param mediaType   the media type
+     * @param httpHeaders the http headers
+     * @param inputStream the input stream
+     */
     public RequestContextJerseyWrapper(MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream inputStream) {
 
         this.charset = httpHeaders.getFirst(HttpHeaders.CONTENT_ENCODING);

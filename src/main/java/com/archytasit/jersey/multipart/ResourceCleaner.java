@@ -9,11 +9,20 @@ import org.glassfish.jersey.server.ContainerRequest;
 
 import com.archytasit.jersey.multipart.model.databags.IDataBag;
 
+/**
+ * The type Resource cleaner.
+ */
 public class ResourceCleaner {
 
     private static String REQUEST_FILES_LIST_PROPERTY_NAME = ResourceCleaner.class.getName();
     private static String REQUEST_MARKER_PROPERTY_NAME = "MARKER_" + ResourceCleaner.class.getName();
 
+    /**
+     * Track resource to clean.
+     *
+     * @param resourceToClean the resource to clean
+     * @param request         the request
+     */
     public void trackResourceToClean(IDataBag resourceToClean, ContainerRequest request) {
 
         UUID marker = getOrCreateRequestProperty(request, REQUEST_MARKER_PROPERTY_NAME, UUID::randomUUID);
@@ -24,6 +33,11 @@ public class ResourceCleaner {
     }
 
 
+    /**
+     * Clean request.
+     *
+     * @param request the request
+     */
     public void cleanRequest(ContainerRequest request) {
         Set<IDataBag> filesToClean = (Set<IDataBag>) request.getProperty(ResourceCleaner.class.getName());
         if (filesToClean != null) {

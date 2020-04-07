@@ -11,6 +11,9 @@ import com.archytasit.jersey.multipart.MultiPartConfig;
 import com.archytasit.jersey.multipart.model.databags.IDataBagProvider;
 import com.archytasit.jersey.multipart.utils.StreamUtils;
 
+/**
+ * The type File data bag provider.
+ */
 public class FileDataBagProvider implements IDataBagProvider<FileDataBag> {
 
     @Override

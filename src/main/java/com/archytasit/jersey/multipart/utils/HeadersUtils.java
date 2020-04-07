@@ -14,10 +14,19 @@ import org.apache.commons.fileupload.FileItemHeaders;
 
 import com.archytasit.jersey.multipart.LoggingWrapper;
 
+/**
+ * The type Headers utils.
+ */
 public class HeadersUtils {
 
 
-
+    /**
+     * Gets media type.
+     *
+     * @param contentType  the content type
+     * @param defaultValue the default value
+     * @return the media type
+     */
     public static MediaType getMediaType(String contentType, MediaType defaultValue) {
         if (contentType != null && contentType.trim().length() > 0) {
             try {
@@ -29,11 +38,25 @@ public class HeadersUtils {
         return defaultValue;
     }
 
+    /**
+     * Gets charset.
+     *
+     * @param defaultCharset the default charset
+     * @param mt             the mt
+     * @param headers        the headers
+     * @return the charset
+     */
     public static Charset getCharset(Charset defaultCharset, MediaType mt, MultivaluedMap headers) {
         // TODO
         return defaultCharset;
     }
 
+    /**
+     * To multi valued map multivalued map.
+     *
+     * @param headers the headers
+     * @return the multivalued map
+     */
     public static MultivaluedMap<String, String> toMultiValuedMap(FileItemHeaders headers) {
         MultivaluedMap<String, String> result = new MultivaluedHashMap<>();
         if (headers != null) {

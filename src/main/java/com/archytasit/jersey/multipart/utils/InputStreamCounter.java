@@ -8,12 +8,26 @@ import org.apache.commons.io.output.NullOutputStream;
 
 import com.archytasit.jersey.multipart.LoggingWrapper;
 
+/**
+ * The type Input stream counter.
+ */
 public class InputStreamCounter extends InputStream {
 
+    /**
+     * The Counter.
+     */
     protected long counter = 0L;
 
+    /**
+     * The Is.
+     */
     protected InputStream is;
 
+    /**
+     * Instantiates a new Input stream counter.
+     *
+     * @param is the is
+     */
     public InputStreamCounter(InputStream is) {
         this.is = is;
     }
@@ -33,6 +47,12 @@ public class InputStreamCounter extends InputStream {
         return addToCounter(is.skip(n));
     }
 
+    /**
+     * Add to counter long.
+     *
+     * @param num the num
+     * @return the long
+     */
     protected long addToCounter(long num) {
         this.counter+=num;
         return num;
@@ -77,6 +97,11 @@ public class InputStreamCounter extends InputStream {
         return super.markSupported();
     }
 
+    /**
+     * Gets content read.
+     *
+     * @return the content read
+     */
     public long getContentRead() {
         return counter;
     }

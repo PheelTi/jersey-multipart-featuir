@@ -13,6 +13,9 @@ import java.util.stream.Stream;
 
 import javax.ws.rs.InternalServerErrorException;
 
+/**
+ * The type Class utils.
+ */
 public class ClassUtils {
     private static final Set<Class<?>> TYPES = Stream.of(
                 Byte.class,
@@ -32,11 +35,23 @@ public class ClassUtils {
                 Character.class,
                 char.class).collect(Collectors.toSet());
 
-    
+
+    /**
+     * Is primitive boolean.
+     *
+     * @param type the type
+     * @return the boolean
+     */
     public static boolean isPrimitive(final Class<?> type) {
         return TYPES.contains(type);
     }
 
+    /**
+     * Gets stream collector.
+     *
+     * @param collectionClass the collection class
+     * @return the stream collector
+     */
     public static Collector getStreamCollector(Class<?> collectionClass) {
         if (List.class.isAssignableFrom(collectionClass)) {
             return Collectors.toList();

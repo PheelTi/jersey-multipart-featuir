@@ -22,18 +22,32 @@ import com.archytasit.jersey.multipart.model.databags.IDataBagProvider;
 import com.archytasit.jersey.multipart.model.databags.file.FileDataBagProvider;
 
 
-
+/**
+ * The type Multipart feature.
+ */
 public class MultipartFeature implements Feature {
 
     private IBodyPartProvider bodyPartProvider;
 
     private IDataBagProvider dataBagProvider;
 
+    /**
+     * With body part provider multipart feature.
+     *
+     * @param bodyPartProvider the body part provider
+     * @return the multipart feature
+     */
     public MultipartFeature withBodyPartProvider(IBodyPartProvider bodyPartProvider) {
         this.bodyPartProvider = bodyPartProvider;
         return this;
     }
 
+    /**
+     * With data bag provider multipart feature.
+     *
+     * @param dataBagProvider the data bag provider
+     * @return the multipart feature
+     */
     public MultipartFeature withDataBagProvider(IDataBagProvider dataBagProvider) {
         this.dataBagProvider = dataBagProvider;
         return this;

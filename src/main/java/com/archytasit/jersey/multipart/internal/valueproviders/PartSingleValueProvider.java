@@ -10,9 +10,19 @@ import org.glassfish.jersey.server.model.Parameter;
 import com.archytasit.jersey.multipart.model.MultiPart;
 import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
 
+/**
+ * The type Part single value provider.
+ *
+ * @param <T> the type parameter
+ */
 public class PartSingleValueProvider<T extends IBodyPart> extends AbstractBodyPartsValueProvider<T> {
 
 
+    /**
+     * Instantiates a new Part single value provider.
+     *
+     * @param param the param
+     */
     public PartSingleValueProvider(Parameter param) {
         super(param);
     }
