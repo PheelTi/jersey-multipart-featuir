@@ -6,7 +6,11 @@
     <artifactId>jersey-multipart-upload-core-feature</artifactId>
     <groupId>io.github.archytas-it</groupId>
     <version>0.0.1-SNAPSHOT</version>
-
+    <description>Alternative implementation of multipart management for JaxRS implementation Jersey 2.X</description>
+    <organization>
+        <name>Archytas IT</name>
+        <url>https://github.com/archytas-it</url>
+    </organization>
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
