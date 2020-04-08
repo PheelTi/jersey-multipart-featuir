@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
-
 /**
  * The type Multi part.
  */

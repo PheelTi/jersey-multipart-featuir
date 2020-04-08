@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,11 +17,8 @@ import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 
-import com.archytasit.jersey.multipart.LoggingWrapper;
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import com.archytasit.jersey.multipart.annotations.Map;
-import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 
 /**
@@ -74,7 +73,7 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
                     MediaType from = HeadersUtils.getMediaType(m.from(), null);
                     MediaType to = HeadersUtils.getMediaType(m.to(), null);
                     if (from == null|| to == null) {
-                        LoggingWrapper.warn(AbstractBodyPartsValueProvider.class, String.format("ignored invalid media type in FormDataParam.Map : %s -> %s", m.from(), m.to()), null);
+                        Logger.getLogger(AbstractEnhancedBodyPartsValueProvider.class.getName()).log(Level.WARNING, String.format("ignored invalid media type in FormDataParam.Map : %s -> %s", m.from(), m.to()));
                         return null;
                     }
                     return new Mapping(from, to);
@@ -82,7 +81,7 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
         ).filter(Objects::nonNull).collect(Collectors.toList());
 
         return (b) -> {
-            MediaType mediaType = b.getMediaType() != null ? b.getMediaType() : MediaType.TEXT_PLAIN_TYPE;
+            MediaType mediaType = b.getContentType() != null ? b.getContentType() : MediaType.TEXT_PLAIN_TYPE;
             for (Mapping mapping : mappings) {
                 if (mediaType.isCompatible(mapping.from)) {
                     return mapping.to;

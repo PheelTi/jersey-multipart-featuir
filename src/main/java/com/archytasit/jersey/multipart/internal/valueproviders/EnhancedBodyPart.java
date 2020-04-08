@@ -1,10 +1,8 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import java.util.function.Function;
-
 import javax.ws.rs.core.MediaType;
 
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 
 /**
  * The type Enhanced body part.

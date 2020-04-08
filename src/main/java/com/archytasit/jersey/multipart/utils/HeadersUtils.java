@@ -3,6 +3,8 @@ package com.archytasit.jersey.multipart.utils;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -11,8 +13,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.fileupload.FileItemHeaders;
-
-import com.archytasit.jersey.multipart.LoggingWrapper;
 
 /**
  * The type Headers utils.
@@ -32,7 +32,7 @@ public class HeadersUtils {
             try {
                 return MediaType.valueOf(contentType);
             } catch (IllegalArgumentException e) {
-                LoggingWrapper.warn(HeadersUtils.class, "unknown media type", null);
+                Logger.getLogger(HeadersUtils.class.getName()).log(Level.WARNING,  "unknown media type");
             }
         }
         return defaultValue;

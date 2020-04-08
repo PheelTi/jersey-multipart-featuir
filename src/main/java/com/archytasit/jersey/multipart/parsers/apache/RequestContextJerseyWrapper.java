@@ -1,14 +1,13 @@
-package com.archytasit.jersey.multipart.model.bodyparts.apache;
+package com.archytasit.jersey.multipart.parsers.apache;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import org.apache.commons.fileupload.RequestContext;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.commons.fileupload.RequestContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The type Request context jersey wrapper.

@@ -1,12 +1,10 @@
 package com.archytasit.jersey.multipart.internal;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
 import javax.inject.Provider;
-import javax.ws.rs.InternalServerErrorException;
 
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 import org.glassfish.jersey.server.ContainerRequest;
@@ -21,7 +19,7 @@ import com.archytasit.jersey.multipart.internal.valueproviders.PartListValueProv
 import com.archytasit.jersey.multipart.internal.valueproviders.PartSingleValueProvider;
 import com.archytasit.jersey.multipart.internal.valueproviders.SingleValueProvider;
 import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 
 /**
  * The type Form data param value param provider.

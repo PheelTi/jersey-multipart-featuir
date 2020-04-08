@@ -6,11 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -26,12 +22,12 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
 
+import com.archytasit.jersey.multipart.parsers.IRequestParser;
+import com.archytasit.jersey.multipart.parsers.StreamingPartIterator;
 import org.glassfish.jersey.server.ContainerRequest;
 
-import com.archytasit.jersey.multipart.model.databags.IDataBagProvider;
-import com.archytasit.jersey.multipart.model.databags.IDataBag;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPartProvider;
+import com.archytasit.jersey.multipart.model.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPartProvider;
 import com.archytasit.jersey.multipart.utils.InputStreamLimitCounter;
 import com.archytasit.jersey.multipart.model.MultiPart;
 
@@ -53,10 +49,10 @@ public class FileUploadMessageBodyWorker implements MessageBodyReader<MultiPart>
     private MultiPartConfig config;
 
     @Inject
-    private IBodyPartProvider bodyPartProvider;
+    private IRequestParser requestParser;
 
     @Inject
-    private IDataBagProvider dataBagProvider;
+    private IBodyPartProvider bodyPartProvider;
 
     /**
      * Instantiates a new File upload message body worker.
@@ -93,13 +89,16 @@ public class FileUploadMessageBodyWorker implements MessageBodyReader<MultiPart>
 
         MultiPart multiPart = new MultiPart();
         multiPart.setMediaType(mediaType);
-        List<IBodyPart> bodyParts = bodyPartProvider.parseRequest(config, dataBagProvider, mediaType, httpHeaders, baseInputStream);
-        bodyParts.stream().forEach(b -> {
-            if (b.getDataBag() instanceof IDataBag && ((IDataBag) b.getDataBag()).isCleanable()) {
-                resourceCleaner.trackResourceToClean((IDataBag)b.getDataBag(), requestProvider.get());
+
+        StreamingPartIterator partIterator = requestParser.getPartIterator(mediaType, httpHeaders, baseInputStream);
+        if (partIterator != null) {
+            while (partIterator.hasNext()) {
+                IBodyPart bodyPart = bodyPartProvider.provideBodyPart(config, partIterator.next());
+                resourceCleaner.trackResourceToClean(bodyPart, config.getCleanResourceMode(), requestProvider.get());
+                multiPart.getBodyParts().add(bodyPart);
+
             }
-        });
-        multiPart.setBodyParts(bodyParts == null ? new ArrayList<>() : bodyParts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        }
 
         return multiPart;
     }

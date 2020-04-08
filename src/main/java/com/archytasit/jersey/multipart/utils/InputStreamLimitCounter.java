@@ -3,10 +3,10 @@ package com.archytasit.jersey.multipart.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.output.NullOutputStream;
-
-import com.archytasit.jersey.multipart.LoggingWrapper;
 
 /**
  * The type Input stream limit counter.
@@ -38,7 +38,7 @@ public class InputStreamLimitCounter extends InputStreamCounter {
             try {
                 StreamUtils.toOutStream(this.is, new NullOutputStream());
             } catch (IOException e) {
-                LoggingWrapper.warn(InputStreamLimitCounter.class, "failed to read the remaining of request", e);
+                Logger.getLogger(InputStreamLimitCounter.class.getName()).log(Level.WARNING, "failed to read the remaining of request", e);
             }
             onLimitReached.accept(this.is);
         }

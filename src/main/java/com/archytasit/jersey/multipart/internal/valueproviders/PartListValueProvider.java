@@ -8,8 +8,7 @@ import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 
 
-import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 import com.archytasit.jersey.multipart.utils.ClassUtils;
 
 /**

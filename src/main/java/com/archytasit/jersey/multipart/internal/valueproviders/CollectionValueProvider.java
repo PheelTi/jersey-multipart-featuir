@@ -40,6 +40,7 @@ public class CollectionValueProvider extends SingleValueProvider {
         this.genericTypeArgument = ReflectionHelper.getGenericTypeArgumentClasses(parameter.getType()).get(0);
     }
 
+
     @Override
     protected Object applyToEnhancedBodyParts(ContainerRequest request, List<EnhancedBodyPart> enhancedBodyParts) {
         Set<EnhancedBodyPart.ValueExtractionMode> modes = enhancedBodyParts.stream().map(EnhancedBodyPart::getMode).collect(Collectors.toSet());
@@ -48,13 +49,13 @@ public class CollectionValueProvider extends SingleValueProvider {
             return null;
         } else if (modes.size() == 1) {
             MessageBodyWorkers mbw = request.getWorkers();
-            switch (modes.iterator().next()){
-                case MESSAGE_BODY_WORKER:
-                    return enhancedBodyParts.stream().map((b) -> applyMessageBodyWorker(b, genericTypeArgument, genericTypeArgument, b.getMappedMediaType(), mbw)).collect(streamCollector);
-                case EXTRACTOR:
-                    return applyExtractor(enhancedBodyParts.stream(), mbw);
-                default:
-                    return enhancedBodyParts.stream().map(b -> null).collect(streamCollector);
+            EnhancedBodyPart.ValueExtractionMode mode = modes.iterator().next();
+            if (extractor == null || EnhancedBodyPart.ValueExtractionMode.MESSAGE_BODY_WORKER.equals(mode)) {
+                return enhancedBodyParts.stream().map((b) -> applyMessageBodyWorker(b, genericTypeArgument, genericTypeArgument, b.getMappedMediaType(), mbw)).collect(streamCollector);
+            } else if (extractor != null) {
+                return applyExtractor(enhancedBodyParts.stream(), mbw);
+            } else {
+                return enhancedBodyParts.stream().map(b -> null).collect(streamCollector);
             }
         } else {
             throw new FormDataParamException(new IllegalArgumentException("Mix of attachements and form fields could not be extracted"), getParameterName(), parameter.getDefaultValue());

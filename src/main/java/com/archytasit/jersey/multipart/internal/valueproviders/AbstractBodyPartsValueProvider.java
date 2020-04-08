@@ -1,28 +1,16 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.internal.LocalizationMessages;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 
-import com.archytasit.jersey.multipart.LoggingWrapper;
 import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
-import com.archytasit.jersey.multipart.utils.HeadersUtils;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 
 /**
  * The type Abstract body parts value provider.

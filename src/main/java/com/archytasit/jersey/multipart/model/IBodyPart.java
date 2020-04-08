@@ -1,4 +1,4 @@
-package com.archytasit.jersey.multipart.model.bodyparts;
+package com.archytasit.jersey.multipart.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,17 +8,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * The interface Body part.
- *
- * @param <T> the type parameter
  */
-public interface IBodyPart<T> {
-
-    /**
-     * Gets data bag.
-     *
-     * @return the data bag
-     */
-    T getDataBag();
+public interface IBodyPart {
 
     /**
      * Gets field name.
@@ -27,12 +18,20 @@ public interface IBodyPart<T> {
      */
     String getFieldName();
 
+
     /**
-     * Gets media type.
+     * Gets file name.
      *
-     * @return the media type
+     * @return the file name
      */
-    MediaType getMediaType();
+    String getFileName();
+
+    /**
+     * Gets content type.
+     *
+     * @return the content type
+     */
+    MediaType getContentType();
 
     /**
      * Gets content length.
@@ -62,4 +61,9 @@ public interface IBodyPart<T> {
      * @return the boolean
      */
     boolean isFormField();
+
+    /**
+     * Clean resource.
+     */
+    void cleanResource();
 }

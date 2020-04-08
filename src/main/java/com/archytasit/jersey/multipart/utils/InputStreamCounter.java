@@ -2,11 +2,6 @@ package com.archytasit.jersey.multipart.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Consumer;
-
-import org.apache.commons.io.output.NullOutputStream;
-
-import com.archytasit.jersey.multipart.LoggingWrapper;
 
 /**
  * The type Input stream counter.

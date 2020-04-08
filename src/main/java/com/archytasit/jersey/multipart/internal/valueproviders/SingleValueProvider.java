@@ -17,7 +17,7 @@ import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor;
 
 import com.archytasit.jersey.multipart.exception.FormDataParamException;
-import com.archytasit.jersey.multipart.model.bodyparts.FormBodyPart;
+import com.archytasit.jersey.multipart.model.StringBodyPart;
 
 /**
  * The type Single value provider.
@@ -46,14 +46,14 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
             return null;
         }
         EnhancedBodyPart bp = enhancedBodyParts.get(0);
-        switch (bp.getMode()) {
-            case MESSAGE_BODY_WORKER:
-                return applyMessageBodyWorker(bp, request.getWorkers());
-            case EXTRACTOR:
-                return applyExtractor(Stream.of(bp), request.getWorkers());
-            default:
-                return null;
+        if (extractor == null || EnhancedBodyPart.ValueExtractionMode.MESSAGE_BODY_WORKER.equals(bp.getMode())) {
+            return applyMessageBodyWorker(bp, request.getWorkers());
+        } else if (extractor != null) {
+            return applyExtractor(Stream.of(bp), request.getWorkers());
         }
+
+        return null;
+
     }
 
 
@@ -73,8 +73,8 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
     }
 
     private String asString(EnhancedBodyPart iBodyPart, MessageBodyWorkers workers) {
-        if (iBodyPart.getBodyPart() instanceof FormBodyPart) {
-            return ((FormBodyPart) iBodyPart.getBodyPart()).getDataBag();
+        if (iBodyPart.getBodyPart() instanceof StringBodyPart) {
+            return ((StringBodyPart) iBodyPart.getBodyPart()).getStringValue();
         } else {
             return applyMessageBodyWorker(iBodyPart, String.class, String.class, MediaType.TEXT_PLAIN_TYPE, workers);
         }

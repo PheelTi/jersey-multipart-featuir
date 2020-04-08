@@ -25,7 +25,7 @@ public class ResourceCleaningListener implements ApplicationEventListener {
         return (e) -> {
             switch (e.getType()) {
                 case FINISHED:
-                    tempFileCleaner.cleanRequest(e.getContainerRequest());
+                    tempFileCleaner.cleanRequest(e.getContainerRequest(), e.isSuccess());
                     break;
             }
         };

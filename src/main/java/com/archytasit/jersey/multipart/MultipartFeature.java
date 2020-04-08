@@ -1,15 +1,16 @@
 package com.archytasit.jersey.multipart;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-import com.archytasit.jersey.multipart.model.bodyparts.apache.ApacheFileUploadBodyPartProvider;
-import org.glassfish.hk2.api.ServiceLocator;
+import com.archytasit.jersey.multipart.model.FileBodyPartProvider;
+import com.archytasit.jersey.multipart.model.FormFieldOrAttachementBodyPartProvider;
+import com.archytasit.jersey.multipart.model.StringBodyPartProvider;
+import com.archytasit.jersey.multipart.parsers.IRequestParser;
+import com.archytasit.jersey.multipart.parsers.apache.ApachePartParser;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.internal.inject.Bindings;
-import org.glassfish.jersey.internal.inject.Injections;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractorProvider;
 import org.glassfish.jersey.server.internal.inject.ParamInjectionResolver;
@@ -17,9 +18,7 @@ import org.glassfish.jersey.server.spi.internal.ValueParamProvider;
 
 import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import com.archytasit.jersey.multipart.internal.FormDataParamValueParamProvider;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPartProvider;
-import com.archytasit.jersey.multipart.model.databags.IDataBagProvider;
-import com.archytasit.jersey.multipart.model.databags.file.FileDataBagProvider;
+import com.archytasit.jersey.multipart.model.IBodyPartProvider;
 
 
 /**
@@ -27,9 +26,10 @@ import com.archytasit.jersey.multipart.model.databags.file.FileDataBagProvider;
  */
 public class MultipartFeature implements Feature {
 
+    private IRequestParser requestParser;
+
     private IBodyPartProvider bodyPartProvider;
 
-    private IDataBagProvider dataBagProvider;
 
     /**
      * With body part provider multipart feature.
@@ -42,14 +42,15 @@ public class MultipartFeature implements Feature {
         return this;
     }
 
+
     /**
-     * With data bag provider multipart feature.
+     * With request parser multipart feature.
      *
-     * @param dataBagProvider the data bag provider
+     * @param requestParser the request parser
      * @return the multipart feature
      */
-    public MultipartFeature withDataBagProvider(IDataBagProvider dataBagProvider) {
-        this.dataBagProvider = dataBagProvider;
+    public MultipartFeature withRequestParser(IRequestParser requestParser) {
+        this.requestParser = requestParser;
         return this;
     }
 
@@ -62,11 +63,11 @@ public class MultipartFeature implements Feature {
             protected void configure() {
 
                 if (bodyPartProvider == null) {
-                    bind(new ApacheFileUploadBodyPartProvider()).to(IBodyPartProvider.class);
+                    bind(new FormFieldOrAttachementBodyPartProvider(new StringBodyPartProvider(), new FileBodyPartProvider())).to(IBodyPartProvider.class);
                 }
 
-                if (dataBagProvider == null) {
-                    bind(new FileDataBagProvider()).to(IDataBagProvider.class);
+                if (requestParser == null) {
+                    bind(new ApachePartParser()).to(IRequestParser.class);
                 }
 
                 bindAsContract(ResourceCleaner.class);

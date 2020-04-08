@@ -7,8 +7,7 @@ import java.util.Optional;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.model.Parameter;
 
-import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.bodyparts.IBodyPart;
+import com.archytasit.jersey.multipart.model.IBodyPart;
 
 /**
  * The type Part single value provider.

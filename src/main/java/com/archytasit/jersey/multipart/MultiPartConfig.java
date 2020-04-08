@@ -13,10 +13,29 @@ import com.archytasit.jersey.multipart.exception.EntityTooLargeException;
 @Provider
 public class MultiPartConfig {
 
+    /**
+     * The enum Clean resource mode.
+     */
+    public enum CleanResourceMode {
+        /**
+         * Always clean resource mode.
+         */
+        ALWAYS,
+        /**
+         * On error clean resource mode.
+         */
+        ON_ERROR,
+        /**
+         * Never clean resource mode.
+         */
+        NEVER;
+    }
+
     private String tempFileDirectory = System.getProperty("java.io.tmpdir");
     private String tempFilePrefix = "MULTIPART_";
     private String tempFileSuffix = null;
     private long requestSizeLimit = -1;
+    private CleanResourceMode cleanResourceMode = CleanResourceMode.ALWAYS;
     private Consumer<InputStream> requestSizeLimitAction = (is) -> {
         throw new EntityTooLargeException();
     };
@@ -73,6 +92,27 @@ public class MultiPartConfig {
         return requestSizeLimitAction;
     }
 
+
+    /**
+     * Gets clean resource mode.
+     *
+     * @return the clean resource mode
+     */
+    public CleanResourceMode getCleanResourceMode() {
+        return cleanResourceMode;
+    }
+
+
+    /**
+     * Clean resource mode multi part config.
+     *
+     * @param cleanResourceMode the clean resource mode
+     * @return the multi part config
+     */
+    public MultiPartConfig cleanResourceMode(CleanResourceMode cleanResourceMode) {
+        this.cleanResourceMode = cleanResourceMode;
+        return this;
+    }
 
     /**
      * Request size limit multi part config.
