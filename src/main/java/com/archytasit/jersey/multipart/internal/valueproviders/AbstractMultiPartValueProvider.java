@@ -1,13 +1,11 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import java.util.function.Function;
-
-import javax.ws.rs.BadRequestException;
-
+import com.archytasit.jersey.multipart.MultiPart;
 import org.glassfish.jersey.internal.LocalizationMessages;
 import org.glassfish.jersey.server.ContainerRequest;
 
-import com.archytasit.jersey.multipart.model.MultiPart;
+import javax.ws.rs.BadRequestException;
+import java.util.function.Function;
 
 /**
  * The type Abstract multi part value provider.

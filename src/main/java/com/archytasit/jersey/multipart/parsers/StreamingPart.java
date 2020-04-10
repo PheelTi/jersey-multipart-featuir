@@ -1,4 +1,6 @@
-package com.archytasit.jersey.multipart.model.internal;
+package com.archytasit.jersey.multipart.parsers;
+
+import com.archytasit.jersey.multipart.ContentDisposition;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -12,6 +14,8 @@ public class StreamingPart {
     private String fieldName;
 
     private MediaType contentType;
+
+    private ContentDisposition contentDisposition;
 
     private MultivaluedMap<String, String> headers;
 
@@ -31,13 +35,14 @@ public class StreamingPart {
      * @param fileName    the file name
      * @param inputStream the input stream
      */
-    public StreamingPart(String fieldName, MediaType contentType, MultivaluedMap<String, String> headers, boolean isFormField, String fileName, InputStream inputStream) {
+    public StreamingPart(String fieldName, MediaType contentType, ContentDisposition contentDisposition, MultivaluedMap<String, String> headers, boolean isFormField, String fileName, InputStream inputStream) {
         this.fieldName = fieldName;
         this.contentType = contentType;
         this.headers = headers;
         this.isFormField = isFormField;
         this.fileName = fileName;
         this.inputStream = inputStream;
+        this.contentDisposition = contentDisposition;
     }
 
     /**
@@ -92,6 +97,10 @@ public class StreamingPart {
      */
     public InputStream getInputStream() {
         return inputStream;
+    }
+
+    public ContentDisposition getContentDisposition() {
+        return contentDisposition;
     }
 }
 

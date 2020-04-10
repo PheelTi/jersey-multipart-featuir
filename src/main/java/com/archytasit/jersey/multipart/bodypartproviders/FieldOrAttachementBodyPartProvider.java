@@ -1,17 +1,18 @@
-package com.archytasit.jersey.multipart.model;
+package com.archytasit.jersey.multipart.bodypartproviders;
 
 import com.archytasit.jersey.multipart.MultiPartConfig;
-import com.archytasit.jersey.multipart.model.internal.StreamingPart;
+import com.archytasit.jersey.multipart.FormDataBodyPart;
+import com.archytasit.jersey.multipart.parsers.StreamingPart;
 
 import java.io.IOException;
 
 /**
  * The type Form field or attachement body part provider.
  */
-public class FormFieldOrAttachementBodyPartProvider implements IBodyPartProvider {
+public class FieldOrAttachementBodyPartProvider implements IFormDataBodyPartProvider {
 
-    private IBodyPartProvider formFieldBodyPartProvider;
-    private IBodyPartProvider attachmentBodyPartProvider;
+    private IFormDataBodyPartProvider formFieldBodyPartProvider;
+    private IFormDataBodyPartProvider attachmentBodyPartProvider;
 
     /**
      * Instantiates a new Form field or attachement body part provider.
@@ -19,7 +20,7 @@ public class FormFieldOrAttachementBodyPartProvider implements IBodyPartProvider
      * @param formFieldBodyPartProvider  the form field body part provider
      * @param attachmentBodyPartProvider the attachment body part provider
      */
-    public FormFieldOrAttachementBodyPartProvider(IBodyPartProvider formFieldBodyPartProvider, IBodyPartProvider attachmentBodyPartProvider) {
+    public FieldOrAttachementBodyPartProvider(IFormDataBodyPartProvider formFieldBodyPartProvider, IFormDataBodyPartProvider attachmentBodyPartProvider) {
         if (formFieldBodyPartProvider == null || attachmentBodyPartProvider == null) {
             throw new IllegalArgumentException();
         }
@@ -28,7 +29,7 @@ public class FormFieldOrAttachementBodyPartProvider implements IBodyPartProvider
     }
 
     @Override
-    public final IBodyPart provideBodyPart(MultiPartConfig config, StreamingPart streamingPart) throws IOException {
+    public final FormDataBodyPart provideBodyPart(MultiPartConfig config, StreamingPart streamingPart) throws IOException {
         if (streamingPart.isFormField()) {
             return formFieldBodyPartProvider.provideBodyPart(config, streamingPart);
         } else {

@@ -1,8 +1,8 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import javax.ws.rs.core.MediaType;
+import com.archytasit.jersey.multipart.FormDataBodyPart;
 
-import com.archytasit.jersey.multipart.model.IBodyPart;
+import javax.ws.rs.core.MediaType;
 
 /**
  * The type Enhanced body part.
@@ -23,7 +23,7 @@ public class EnhancedBodyPart {
         EXTRACTOR;
     }
 
-    private final IBodyPart bodyPart;
+    private final FormDataBodyPart bodyPart;
 
     private final MediaType mappedMediaType;
 
@@ -36,7 +36,7 @@ public class EnhancedBodyPart {
      * @param mappedMediaType the mapped media type
      * @param mode            the mode
      */
-    public EnhancedBodyPart(IBodyPart bodyPart, MediaType mappedMediaType, ValueExtractionMode mode) {
+    public EnhancedBodyPart(FormDataBodyPart bodyPart, MediaType mappedMediaType, ValueExtractionMode mode) {
         this.bodyPart = bodyPart;
         this.mappedMediaType = mappedMediaType;
         this.mode = mode;
@@ -48,7 +48,7 @@ public class EnhancedBodyPart {
      *
      * @return the body part
      */
-    public IBodyPart getBodyPart() {
+    public FormDataBodyPart getBodyPart() {
         return bodyPart;
     }
 

@@ -1,10 +1,9 @@
 package com.archytasit.jersey.multipart.exception;
 
-import javax.ws.rs.core.Response;
-
+import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import org.glassfish.jersey.server.ParamException;
 
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
+import javax.ws.rs.core.Response;
 
 /**
  * The type Form data param exception.

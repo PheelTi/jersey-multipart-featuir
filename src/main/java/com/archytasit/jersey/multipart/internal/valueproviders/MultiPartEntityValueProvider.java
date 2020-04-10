@@ -1,8 +1,7 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
+import com.archytasit.jersey.multipart.MultiPart;
 import org.glassfish.jersey.server.ContainerRequest;
-
-import com.archytasit.jersey.multipart.model.MultiPart;
 
 /**
  * The type Multi part entity value provider.

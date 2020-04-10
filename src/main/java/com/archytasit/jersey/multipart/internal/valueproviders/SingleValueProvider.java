@@ -1,23 +1,20 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
-
+import com.archytasit.jersey.multipart.exception.FormDataParamException;
 import org.glassfish.jersey.internal.util.collection.NullableMultivaluedHashMap;
 import org.glassfish.jersey.message.MessageBodyWorkers;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor;
 
-import com.archytasit.jersey.multipart.exception.FormDataParamException;
-import com.archytasit.jersey.multipart.model.StringBodyPart;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The type Single value provider.
@@ -73,11 +70,7 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
     }
 
     private String asString(EnhancedBodyPart iBodyPart, MessageBodyWorkers workers) {
-        if (iBodyPart.getBodyPart() instanceof StringBodyPart) {
-            return ((StringBodyPart) iBodyPart.getBodyPart()).getStringValue();
-        } else {
-            return applyMessageBodyWorker(iBodyPart, String.class, String.class, MediaType.TEXT_PLAIN_TYPE, workers);
-        }
+        return applyMessageBodyWorker(iBodyPart, String.class, String.class, MediaType.TEXT_PLAIN_TYPE, workers);
     }
 
     /**
@@ -104,25 +97,32 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
      * @return the t
      */
     protected <T> T applyMessageBodyWorker(EnhancedBodyPart bodyPart, Class<T> rawType, Type type, MediaType customMediaType, MessageBodyWorkers workers) {
+        T result = null;
+        try {
 
-        MessageBodyReader<T> bodyReader = workers.getMessageBodyReader(
-                rawType,
-                type,
-                parameter.getAnnotations(),
-                customMediaType);
-        if (bodyReader != null) {
-            try {
-                return (T) bodyReader.readFrom(rawType,
+            result = (T) bodyPart.getBodyPart().getEntity(rawType);
+
+            if (result == null) {
+                MessageBodyReader<T> bodyReader = workers.getMessageBodyReader(
+                        rawType,
                         type,
                         parameter.getAnnotations(),
-                        customMediaType,
-                        bodyPart.getBodyPart().getHeaders(),
-                        bodyPart.getBodyPart().getInputStream());
-            } catch (final IOException e) {
-                throw new FormDataParamException(e, getParameterName(), parameter.getDefaultValue());
+                        customMediaType);
+                if (bodyReader != null) {
+                    result = bodyReader.readFrom(rawType,
+                            type,
+                            parameter.getAnnotations(),
+                            customMediaType,
+                            bodyPart.getBodyPart().getHeaders(),
+                            bodyPart.getBodyPart().getInputStream());
+                }
             }
+
+
+        } catch (final IOException e) {
+            throw new FormDataParamException(e, getParameterName(), parameter.getDefaultValue());
         }
-        return null;
+        return result;
     }
 
 

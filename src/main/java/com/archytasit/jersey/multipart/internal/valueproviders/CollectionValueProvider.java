@@ -1,23 +1,17 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.InternalServerErrorException;
-
+import com.archytasit.jersey.multipart.exception.FormDataParamException;
+import com.archytasit.jersey.multipart.utils.ClassUtils;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 import org.glassfish.jersey.message.MessageBodyWorkers;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor;
 
-import com.archytasit.jersey.multipart.exception.FormDataParamException;
-import com.archytasit.jersey.multipart.utils.ClassUtils;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * The type Collection value provider.

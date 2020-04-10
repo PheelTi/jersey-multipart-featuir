@@ -1,12 +1,12 @@
 package com.archytasit.jersey.multipart.utils;
 
+import org.apache.commons.io.output.NullOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.io.output.NullOutputStream;
 
 /**
  * The type Input stream limit counter.

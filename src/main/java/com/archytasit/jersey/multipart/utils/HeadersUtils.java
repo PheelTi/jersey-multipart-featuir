@@ -1,5 +1,10 @@
 package com.archytasit.jersey.multipart.utils;
 
+import org.apache.commons.fileupload.FileItemHeaders;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
@@ -7,12 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.commons.fileupload.FileItemHeaders;
 
 /**
  * The type Headers utils.
@@ -24,10 +23,9 @@ public class HeadersUtils {
      * Gets media type.
      *
      * @param contentType  the content type
-     * @param defaultValue the default value
      * @return the media type
      */
-    public static MediaType getMediaType(String contentType, MediaType defaultValue) {
+    public static MediaType getMediaType(String contentType) {
         if (contentType != null && contentType.trim().length() > 0) {
             try {
                 return MediaType.valueOf(contentType);
@@ -35,21 +33,18 @@ public class HeadersUtils {
                 Logger.getLogger(HeadersUtils.class.getName()).log(Level.WARNING,  "unknown media type");
             }
         }
-        return defaultValue;
+        return null;
     }
 
-    /**
-     * Gets charset.
-     *
-     * @param defaultCharset the default charset
-     * @param mt             the mt
-     * @param headers        the headers
-     * @return the charset
-     */
-    public static Charset getCharset(Charset defaultCharset, MediaType mt, MultivaluedMap headers) {
-        // TODO
-        return defaultCharset;
+
+    public static Charset getCharset(MediaType mediaType) {
+
+        if (mediaType !=null && mediaType.getParameters().get(HttpHeaderParameters.ContentType.CHARSET) != null) {
+            return Charset.forName(mediaType.getParameters().get(HttpHeaderParameters.ContentType.CHARSET));
+        }
+        return null;
     }
+
 
     /**
      * To multi valued map multivalued map.
@@ -79,4 +74,7 @@ public class HeadersUtils {
         }
         return result;
     }
+
+
+
 }

@@ -1,8 +1,6 @@
 package com.archytasit.jersey.multipart.utils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -10,8 +8,6 @@ import java.util.TreeSet;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.ws.rs.InternalServerErrorException;
 
 /**
  * The type Class utils.

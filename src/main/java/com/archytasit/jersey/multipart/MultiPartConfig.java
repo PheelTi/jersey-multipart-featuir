@@ -1,17 +1,21 @@
 package com.archytasit.jersey.multipart;
 
-import java.io.InputStream;
-import java.util.function.Consumer;
+import com.archytasit.jersey.multipart.exception.EntityTooLargeException;
 
 import javax.ws.rs.ext.Provider;
-
-import com.archytasit.jersey.multipart.exception.EntityTooLargeException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 /**
  * The type Multi part config.
  */
 @Provider
 public class MultiPartConfig {
+
+
+
 
     /**
      * The enum Clean resource mode.
@@ -31,9 +35,11 @@ public class MultiPartConfig {
         NEVER;
     }
 
+    private boolean keepNesterFieldNamesHierarchy = false;
     private String tempFileDirectory = System.getProperty("java.io.tmpdir");
     private String tempFilePrefix = "MULTIPART_";
     private String tempFileSuffix = null;
+    private Charset defaultCharset = Charset.forName("ISO-8859-1");
     private long requestSizeLimit = -1;
     private CleanResourceMode cleanResourceMode = CleanResourceMode.ALWAYS;
     private Consumer<InputStream> requestSizeLimitAction = (is) -> {
@@ -81,6 +87,14 @@ public class MultiPartConfig {
      */
     public long getRequestSizeLimit() {
         return requestSizeLimit;
+    }
+
+    public Charset getDefaultCharset() {
+        return defaultCharset;
+    }
+
+    public boolean isKeepNesterFieldNamesHierarchy() {
+        return keepNesterFieldNamesHierarchy;
     }
 
     /**
@@ -166,6 +180,16 @@ public class MultiPartConfig {
      */
     public MultiPartConfig tempFileSuffix(String tempFileSuffix) {
         this.tempFileSuffix = tempFileSuffix;
+        return this;
+    }
+
+    public MultiPartConfig defaultCharset(Charset defaultCharset) {
+        this.defaultCharset = defaultCharset;
+        return this;
+    }
+
+    public MultiPartConfig keepNesterFieldNamesHierarchy(boolean keepNesterFieldNamesHierarchy) {
+        this.keepNesterFieldNamesHierarchy = keepNesterFieldNamesHierarchy;
         return this;
     }
 }

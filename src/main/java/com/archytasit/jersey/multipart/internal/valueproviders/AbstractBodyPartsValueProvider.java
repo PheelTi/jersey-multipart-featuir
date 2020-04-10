@@ -1,16 +1,15 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
+import com.archytasit.jersey.multipart.annotations.FormDataParam;
+import com.archytasit.jersey.multipart.FormDataBodyPart;
+import com.archytasit.jersey.multipart.MultiPart;
+import org.glassfish.jersey.model.Parameter;
+import org.glassfish.jersey.server.ContainerRequest;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import org.glassfish.jersey.model.Parameter;
-import org.glassfish.jersey.server.ContainerRequest;
-
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
-import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.IBodyPart;
 
 /**
  * The type Abstract body parts value provider.
@@ -29,7 +28,7 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
      * The Parameter.
      */
     protected Parameter parameter;
-    private Predicate<IBodyPart> partNatureFilter;
+    private Predicate<FormDataBodyPart> partNatureFilter;
 
     /**
      * Instantiates a new Abstract body parts value provider.
@@ -44,18 +43,27 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
             this.marker = parameter.getAnnotation(FormDataParam.class);
         }
         this.paramName = this.marker.value();
-        this.partNatureFilter = preparePartNatureFilter(this.marker.filter());
+        this.partNatureFilter = preparePartNatureFilter(this.marker.formDataType());
     }
 
 
     @Override
     protected final T apply(ContainerRequest request, MultiPart entity) {
-        List<IBodyPart> enhancedBodyParts = entity.getBodyParts().stream()
-                .filter(Objects::nonNull)
-                .filter(b -> paramName.equals(b.getFieldName()))
+
+
+        List<FormDataBodyPart> enhancedBodyParts = findFields(entity, paramName).stream()
                 .filter(this.partNatureFilter)
                 .collect(Collectors.toList());
         return applyToBodyParts(request, enhancedBodyParts);
+    }
+
+    private List<FormDataBodyPart> findFields(MultiPart entity, String... names) {
+
+        // TODO search in nested, nested multipart currently ignored
+        return entity.getBodyParts().stream().filter(Objects::nonNull)
+                .filter(p -> paramName.equals(p.getName()))
+                .filter(f -> FormDataBodyPart.class.isAssignableFrom(f.getClass()))
+                .map(FormDataBodyPart.class::cast).collect(Collectors.toList());
     }
 
     /**
@@ -65,7 +73,7 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
      * @param enhancedBodyParts the enhanced body parts
      * @return the t
      */
-    protected abstract T applyToBodyParts(ContainerRequest request, List<IBodyPart> enhancedBodyParts);
+    protected abstract T applyToBodyParts(ContainerRequest request, List<FormDataBodyPart> enhancedBodyParts);
 
 
     /**
@@ -78,12 +86,12 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
     }
 
 
-    private Predicate<IBodyPart> preparePartNatureFilter(FormDataParam.Filter filter) {
+    private Predicate<FormDataBodyPart> preparePartNatureFilter(FormDataParam.FormDataType filter) {
         switch (filter) {
             case FORMFIELD:
-                return IBodyPart::isFormField;
+                return FormDataBodyPart::isFormField;
             case ATTACHMENT:
-                Predicate<IBodyPart> predicate = IBodyPart::isFormField;
+                Predicate<FormDataBodyPart> predicate = FormDataBodyPart::isFormField;
                 return predicate.negate();
             default :
                 return (b) -> true;

@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.ws.rs.core.MediaType;
-
 /**
  * To annotate Resource method parameters, or BeanParam fields
  */
@@ -26,7 +24,7 @@ public @interface FormDataParam {
      *
      * @return restrict field to some kind (form field, attachment field or both
      */
-    Filter filter() default Filter.BOTH;
+    FormDataType formDataType() default FormDataType.BOTH;
 
     /**
      * Map content type as map [ ].
@@ -45,7 +43,7 @@ public @interface FormDataParam {
     /**
      * The enum Filter.
      */
-    public enum Filter {
+    public enum FormDataType {
         /**
          * Both filter.
          */

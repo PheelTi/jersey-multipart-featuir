@@ -1,25 +1,19 @@
 package com.archytasit.jersey.multipart.internal;
 
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-
-import javax.inject.Provider;
-
+import com.archytasit.jersey.multipart.annotations.FormDataParam;
+import com.archytasit.jersey.multipart.internal.valueproviders.*;
+import com.archytasit.jersey.multipart.FormDataBodyPart;
+import com.archytasit.jersey.multipart.MultiPart;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.AbstractValueParamProvider;
 import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractorProvider;
 import org.glassfish.jersey.server.model.Parameter;
 
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
-import com.archytasit.jersey.multipart.internal.valueproviders.CollectionValueProvider;
-import com.archytasit.jersey.multipart.internal.valueproviders.MultiPartEntityValueProvider;
-import com.archytasit.jersey.multipart.internal.valueproviders.PartListValueProvider;
-import com.archytasit.jersey.multipart.internal.valueproviders.PartSingleValueProvider;
-import com.archytasit.jersey.multipart.internal.valueproviders.SingleValueProvider;
-import com.archytasit.jersey.multipart.model.MultiPart;
-import com.archytasit.jersey.multipart.model.IBodyPart;
+import javax.inject.Provider;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * The type Form data param value param provider.
@@ -47,12 +41,12 @@ public class FormDataParamValueParamProvider  extends AbstractValueParamProvider
             } else if (parameter.getAnnotation(FormDataParam.class) != null) {
                 if (List.class.isAssignableFrom(rawType) || Set.class.isAssignableFrom(rawType)) {
                     final Class genericClazz = ReflectionHelper.getGenericTypeArgumentClasses(parameter.getType()).get(0);
-                    if (IBodyPart.class.isAssignableFrom(genericClazz)) {
+                    if (FormDataBodyPart.class.isAssignableFrom(genericClazz)) {
                         return new PartListValueProvider(parameter, genericClazz);
                     } else {
                         return new CollectionValueProvider(parameter, get(parameter));
                     }
-                } else if (IBodyPart.class.isAssignableFrom(rawType)) {
+                } else if (FormDataBodyPart.class.isAssignableFrom(rawType)) {
                     return new PartSingleValueProvider(parameter);
                 } else {
                     return new SingleValueProvider(parameter, get(parameter));

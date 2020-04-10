@@ -1,10 +1,12 @@
 package com.archytasit.jersey.multipart;
 
-import java.util.*;
-import java.util.function.Supplier;
-
-import com.archytasit.jersey.multipart.model.IBodyPart;
 import org.glassfish.jersey.server.ContainerRequest;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * The type Resource cleaner.
@@ -21,9 +23,9 @@ public class ResourceCleaner {
      * @param cleanMode       the clean mode
      * @param request         the request
      */
-    public void trackResourceToClean(IBodyPart resourceToClean, MultiPartConfig.CleanResourceMode cleanMode, ContainerRequest request) {
+    public void trackResourceToClean(BodyPart resourceToClean, MultiPartConfig.CleanResourceMode cleanMode, ContainerRequest request) {
         if (!cleanMode.equals(MultiPartConfig.CleanResourceMode.NEVER)) {
-            Map<MultiPartConfig.CleanResourceMode, Set<IBodyPart>> filesToClean = getOrCreateRequestProperty(request, REQUEST_FILES_LIST_PROPERTY_NAME, HashMap::new);
+            Map<MultiPartConfig.CleanResourceMode, Set<BodyPart>> filesToClean = getOrCreateRequestProperty(request, REQUEST_FILES_LIST_PROPERTY_NAME, HashMap::new);
             if (filesToClean.get(cleanMode) == null) {
                 filesToClean.put(cleanMode, new HashSet<>());
             }
@@ -40,11 +42,11 @@ public class ResourceCleaner {
      */
     public void cleanRequest(ContainerRequest request, boolean isSuccess) {
 
-        Map<MultiPartConfig.CleanResourceMode, Set<IBodyPart>> filesToClean = (Map<MultiPartConfig.CleanResourceMode, Set<IBodyPart>>) request.getProperty(ResourceCleaner.class.getName());
+        Map<MultiPartConfig.CleanResourceMode, Set<BodyPart>> filesToClean = (Map<MultiPartConfig.CleanResourceMode, Set<BodyPart>>) request.getProperty(ResourceCleaner.class.getName());
         if (filesToClean != null) {
-            filesToClean.getOrDefault(MultiPartConfig.CleanResourceMode.ALWAYS, new HashSet<>()).forEach(IBodyPart::cleanResource);
+            filesToClean.getOrDefault(MultiPartConfig.CleanResourceMode.ALWAYS, new HashSet<>()).forEach(BodyPart::close);
             if (!isSuccess) {
-                filesToClean.getOrDefault(MultiPartConfig.CleanResourceMode.ON_ERROR, new HashSet<>()).forEach(IBodyPart::cleanResource);
+                filesToClean.getOrDefault(MultiPartConfig.CleanResourceMode.ON_ERROR, new HashSet<>()).forEach(BodyPart::close);
             }
         }
     }

@@ -1,5 +1,12 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
+import com.archytasit.jersey.multipart.annotations.Map;
+import com.archytasit.jersey.multipart.FormDataBodyPart;
+import com.archytasit.jersey.multipart.utils.HeadersUtils;
+import org.glassfish.jersey.model.Parameter;
+import org.glassfish.jersey.server.ContainerRequest;
+
+import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -12,15 +19,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.model.Parameter;
-import org.glassfish.jersey.server.ContainerRequest;
-
-import com.archytasit.jersey.multipart.annotations.Map;
-import com.archytasit.jersey.multipart.model.IBodyPart;
-import com.archytasit.jersey.multipart.utils.HeadersUtils;
-
 /**
  * The type Abstract enhanced body parts value provider.
  *
@@ -29,8 +27,8 @@ import com.archytasit.jersey.multipart.utils.HeadersUtils;
 public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends AbstractBodyPartsValueProvider<T> {
 
     private Predicate<EnhancedBodyPart> mediaTypeFilter;
-    private Function<IBodyPart, MediaType> mediaTypeConverter;
-    private BiFunction<IBodyPart, MediaType, EnhancedBodyPart.ValueExtractionMode> extractionModeSupplier;
+    private Function<FormDataBodyPart, MediaType> mediaTypeConverter;
+    private BiFunction<FormDataBodyPart, MediaType, EnhancedBodyPart.ValueExtractionMode> extractionModeSupplier;
 
     /**
      * Instantiates a new Abstract enhanced body parts value provider.
@@ -45,7 +43,7 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
     }
 
     @Override
-    protected final T applyToBodyParts(ContainerRequest request, List<IBodyPart> bodyParts) {
+    protected final T applyToBodyParts(ContainerRequest request, List<FormDataBodyPart> bodyParts) {
         List<EnhancedBodyPart> enhancedBodyParts = bodyParts.stream()
                 .filter(Objects::nonNull)
                 .map(b -> {
@@ -67,11 +65,11 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
     protected abstract T applyToEnhancedBodyParts(ContainerRequest request, List<EnhancedBodyPart> enhancedBodyParts);
 
 
-    private Function<IBodyPart, MediaType> prepareMediaTypeConverter(Map[] mappingsStr) {
+    private Function<FormDataBodyPart, MediaType> prepareMediaTypeConverter(Map[] mappingsStr) {
 
         List<Mapping> mappings = Stream.of(mappingsStr).map( m -> {
-                    MediaType from = HeadersUtils.getMediaType(m.from(), null);
-                    MediaType to = HeadersUtils.getMediaType(m.to(), null);
+                    MediaType from = HeadersUtils.getMediaType(m.from());
+                    MediaType to = HeadersUtils.getMediaType(m.to());
                     if (from == null|| to == null) {
                         Logger.getLogger(AbstractEnhancedBodyPartsValueProvider.class.getName()).log(Level.WARNING, String.format("ignored invalid media type in FormDataParam.Map : %s -> %s", m.from(), m.to()));
                         return null;
@@ -94,7 +92,7 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
     private Predicate<EnhancedBodyPart> prepareMediaTypeFilter(String[] filterContentType) {
         Set<MediaType> allowedMediaTypes =  Arrays.stream(filterContentType)
                 .filter(Objects::nonNull)
-                .map(s -> HeadersUtils.getMediaType(s, null))
+                .map(s -> HeadersUtils.getMediaType(s))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         if (allowedMediaTypes.isEmpty()) {
@@ -127,7 +125,7 @@ public abstract class AbstractEnhancedBodyPartsValueProvider<T> extends Abstract
     }
 
 
-    private BiFunction<IBodyPart, MediaType, EnhancedBodyPart.ValueExtractionMode> prepareModeSupplier() {
+    private BiFunction<FormDataBodyPart, MediaType, EnhancedBodyPart.ValueExtractionMode> prepareModeSupplier() {
         return (b, m) -> {
             if (b.isFormField() && m.isCompatible(MediaType.TEXT_PLAIN_TYPE)) {
                 return EnhancedBodyPart.ValueExtractionMode.EXTRACTOR;

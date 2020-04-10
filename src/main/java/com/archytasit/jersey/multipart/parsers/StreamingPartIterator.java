@@ -1,7 +1,5 @@
 package com.archytasit.jersey.multipart.parsers;
 
-import com.archytasit.jersey.multipart.model.internal.StreamingPart;
-
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Iterator;
 
