@@ -1,16 +1,17 @@
 package com.archytasit.jersey.multipart.utils;
 
+import com.sun.xml.internal.ws.api.message.stream.InputStreamMessage;
 import org.apache.commons.fileupload.FileItemHeaders;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -18,6 +19,8 @@ import java.util.stream.StreamSupport;
  */
 public class HeadersUtils {
 
+
+    public static final MediaType MULTIPART_WILDCARD_MEDIATYPE = new MediaType("multipart", MediaType.MEDIA_TYPE_WILDCARD);;
 
     /**
      * Gets media type.
@@ -74,7 +77,5 @@ public class HeadersUtils {
         }
         return result;
     }
-
-
 
 }

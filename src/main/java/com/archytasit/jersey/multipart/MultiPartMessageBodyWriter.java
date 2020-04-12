@@ -107,6 +107,44 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                         final MultivaluedMap<String, Object> headers,
                         final OutputStream stream) throws IOException, WebApplicationException {
 
+
+
+
+        String boundaryString = getOrGenerateBoundary(entity);
+        normaliseHeaders(entity);
+        entity.getHeaders().entrySet().forEach((e) -> {
+            headers.remove(e.getKey());
+            headers.addAll(e.getKey(), e.getValue());
+        });
+
+        headers.putSingle("Content-Type", entity.getContentType().toString());
+
+        // If our entity is not nested, make sure the MIME-Version header is set.
+        final Object value = headers.getFirst("MIME-Version");
+        if (value == null) {
+            headers.putSingle("MIME-Version", "1.0");
+        }
+
+
+        writeMultiPart(
+                entity,
+                boundaryString,
+                annotations,
+                entity.getContentType(),
+                headers,
+                stream
+                );
+
+    }
+
+
+    public void writeMultiPart(final MultiPart entity,
+        final String boundaryString,
+        final Annotation[] annotations,
+        final MediaType mediaType,
+        final MultivaluedMap<String, Object> headers,
+        final OutputStream stream) throws IOException, WebApplicationException {
+
         // Verify that there is at least one body part.
         if ((entity.getBodyParts() == null) || (entity.getBodyParts().size() < 1)) {
             throw new IllegalArgumentException();
@@ -124,11 +162,20 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
         final Writer writer = new BufferedWriter(new OutputStreamWriter(stream, MessageUtils.getCharset(mediaType)));
 
 
-        final String boundaryString = checkBoundaryAndGenerate(headers, mediaType);
+
+
 
         // Iterate through the body parts for this message.
         boolean isFirst = true;
         for (final BodyPart bodyPart : entity.getBodyParts()) {
+
+
+
+            String subBoundary = null;
+            if (bodyPart instanceof MultiPart) {
+                subBoundary = getOrGenerateBoundary((MultiPart)bodyPart);
+            }
+            normaliseHeaders(bodyPart);
 
             // Write the leading boundary string
             if (isFirst) {
@@ -147,12 +194,6 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
             }
 
             final MultivaluedMap<String, String> bodyHeaders = bodyPart.getHeaders();
-            bodyHeaders.putSingle("Content-Type", bodyMediaType.toString());
-
-            if (bodyHeaders.getFirst("Content-Disposition") == null && bodyPart.getContentDisposition() != null) {
-                bodyHeaders.putSingle("Content-Disposition", bodyPart.getContentDisposition().toString());
-            }
-
             // Iterate for the nested body parts
             for (final Map.Entry<String, List<String>> entry : bodyHeaders.entrySet()) {
                 // Write this header and its value(s)
@@ -178,12 +219,11 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
             if (MultiPart.class.isAssignableFrom(bodyPart.getClass())) {
                 MultiPart nestedMultiPart = (MultiPart) bodyPart;
 
-                writeTo(nestedMultiPart,
-                    MultiPart.class,
-                    null,
+                writeMultiPart(nestedMultiPart,
+                        subBoundary,
                     annotations,
                         nestedMultiPart.getContentType(),
-                    normaliseHeaders(nestedMultiPart),
+                        (MultivaluedMap) nestedMultiPart.getHeaders(),
                 stream);
 
             } else if (FormDataBodyPart.class.isAssignableFrom(bodyPart.getClass())) {
@@ -245,38 +285,28 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
     }
 
 
-    private MultivaluedMap<String, Object> normaliseHeaders(MultiPart nestedMultiPart) {
+    private String getOrGenerateBoundary(MultiPart entity) {
 
-        MultivaluedMap headers = nestedMultiPart.getHeaders();
-
-        if (headers == null) {
-            headers = new MultivaluedHashMap();
+        String boundary = entity.getContentType().getParameters().get(HttpHeaderParameters.ContentType.BOUNDARY);
+        if (boundary == null || boundary.trim().length() == 0) {
+            boundary = Stream.concat(
+                    Stream.of(HttpHeaderParameters.ContentType.BOUNDARY),
+                    Stream.of(UUID.randomUUID().toString().replace('-','_')))
+                    .collect(Collectors.joining("_"));
+            entity.addContentTypeParameter(HttpHeaderParameters.ContentType.BOUNDARY, boundary);
         }
-
-        if (headers.getFirst(HttpHeaders.CONTENT_DISPOSITION) != null && nestedMultiPart.getContentDisposition() != null) {
-            headers.putSingle(HttpHeaders.CONTENT_DISPOSITION, nestedMultiPart.getContentDisposition().toString());
-        }
-
-        return headers;
-
-    }
-
-    private String checkBoundaryAndGenerate(MultivaluedMap<String, Object> headers, MediaType mediaType) {
-        String boundary = mediaType.getParameters().get(HttpHeaderParameters.ContentType.BOUNDARY);
-        if (boundary != null && boundary.trim().length() > 0) {
-            return boundary;
-        }
-
-        boundary = Stream.concat(
-                Stream.of(HttpHeaderParameters.ContentType.BOUNDARY, Long.toString(System.currentTimeMillis())),
-                Stream.of(UUID.randomUUID().toString().replace('-','_')))
-                .collect(Collectors.joining("_"));
-
-        Map<String, String> newParams = new HashMap<>(mediaType.getParameters());
-        newParams.put(HttpHeaderParameters.ContentType.BOUNDARY, boundary);
-        headers.putSingle(HttpHeaders.CONTENT_TYPE, new MediaType(mediaType.getType(), mediaType.getSubtype(), newParams).toString());
-
         return boundary;
+
     }
+
+    private void normaliseHeaders(BodyPart entity) {
+
+        if (entity.getContentDisposition() != null) {
+            entity.getHeaders().putSingle(HttpHeaders.CONTENT_DISPOSITION, entity.getContentDisposition().toString());
+        }
+        entity.getHeaders().putSingle(HttpHeaders.CONTENT_TYPE, entity.getContentType().toString());
+    }
+
+
 
 }

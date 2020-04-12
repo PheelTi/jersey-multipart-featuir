@@ -13,6 +13,9 @@ import javax.ws.rs.ext.MessageBodyReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,9 +65,14 @@ public class SingleValueProvider extends AbstractEnhancedBodyPartsValueProvider<
      * @return the object
      */
     protected Object applyExtractor(Stream<EnhancedBodyPart> bp, MessageBodyWorkers workers) {
+        Predicate<String> filterNullOrNot = (s) -> true;
+        // if sorted set we exclude null (and empty) param values
+        if ((SortedSet.class.isAssignableFrom(parameter.getRawType()))) {
+            filterNullOrNot = s -> s != null && !s.isEmpty();
+        }
         MultivaluedMap paramValuesMap = new NullableMultivaluedHashMap();
         paramValuesMap.addAll(getParameterName(),
-            bp.map(b -> asString(b, workers)).collect(Collectors.toList()));
+            bp.map(b -> asString(b, workers)).filter(filterNullOrNot).collect(Collectors.toList()));
         return extractor.extract(paramValuesMap);
 
     }

@@ -1,5 +1,7 @@
 package com.archytasit.jersey.multipart;
 
+import com.archytasit.jersey.multipart.utils.HeadersUtils;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -17,6 +19,11 @@ public class MultiPart extends BodyPart {
 
     public void add(BodyPart bodyPart) {
         if (bodyPart != null) {
+            if (bodyPart instanceof MultiPart
+                    && (!HeadersUtils.MULTIPART_WILDCARD_MEDIATYPE.isCompatible(bodyPart.getContentType())
+                    || MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(bodyPart.getContentType()))) {
+                throw new IllegalArgumentException("nested multipart must be of type 'multipart/*' and not 'multipart/form-data'");
+            }
             bodyPart.setParent(this);
             bodyParts.add(bodyPart);
         }
@@ -28,13 +35,18 @@ public class MultiPart extends BodyPart {
        }
     }
 
-    public MultiPart() {
-        this(null, MediaType.MULTIPART_FORM_DATA_TYPE, new MultivaluedHashMap<>(), null);
+
+    public static MultiPart mixedMultiPart(String name) {
+        return new MultiPart(name, new MediaType("multipart", "mixed"), new MultivaluedHashMap<>(), ContentDisposition.defaultValue(name));
+    }
+
+    public static MultiPart formDataMultiPart() {
+        return new MultiPart(null, MediaType.MULTIPART_FORM_DATA_TYPE, new MultivaluedHashMap<>(), null);
     }
 
     public MultiPart(String name, MediaType contentType, MultivaluedMap<String, String> headers, ContentDisposition contentDisposition) {
         super(name, contentType, headers, contentDisposition);
-        if (!"multipart".equals(contentType.getType())) {
+        if (!HeadersUtils.MULTIPART_WILDCARD_MEDIATYPE.isCompatible(contentType)) {
             throw new IllegalArgumentException("contentType for Multipart wust be 'multipart/*' or compatible subtypes");
         }
     }

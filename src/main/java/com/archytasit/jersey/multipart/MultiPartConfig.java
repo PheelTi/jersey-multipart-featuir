@@ -1,12 +1,18 @@
 package com.archytasit.jersey.multipart;
 
 import com.archytasit.jersey.multipart.exception.EntityTooLargeException;
+import com.archytasit.jersey.multipart.utils.InputStreamLimitCounter;
+import com.archytasit.jersey.multipart.utils.StreamUtils;
+import org.apache.commons.io.output.NullOutputStream;
 
 import javax.ws.rs.ext.Provider;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The type Multi part config.
@@ -35,7 +41,6 @@ public class MultiPartConfig {
         NEVER;
     }
 
-    private boolean keepNesterFieldNamesHierarchy = false;
     private String tempFileDirectory = System.getProperty("java.io.tmpdir");
     private String tempFilePrefix = "MULTIPART_";
     private String tempFileSuffix = null;
@@ -43,6 +48,13 @@ public class MultiPartConfig {
     private long requestSizeLimit = -1;
     private CleanResourceMode cleanResourceMode = CleanResourceMode.ALWAYS;
     private Consumer<InputStream> requestSizeLimitAction = (is) -> {
+        if (is != null) {
+            try {
+                StreamUtils.toOutStream(is, new NullOutputStream());
+            } catch (IOException e) {
+                Logger.getLogger(InputStreamLimitCounter.class.getName()).log(Level.WARNING, "failed to read the remaining of request", e);
+            }
+        }
         throw new EntityTooLargeException();
     };
 
@@ -91,10 +103,6 @@ public class MultiPartConfig {
 
     public Charset getDefaultCharset() {
         return defaultCharset;
-    }
-
-    public boolean isKeepNesterFieldNamesHierarchy() {
-        return keepNesterFieldNamesHierarchy;
     }
 
     /**
@@ -188,8 +196,4 @@ public class MultiPartConfig {
         return this;
     }
 
-    public MultiPartConfig keepNesterFieldNamesHierarchy(boolean keepNesterFieldNamesHierarchy) {
-        this.keepNesterFieldNamesHierarchy = keepNesterFieldNamesHierarchy;
-        return this;
-    }
 }

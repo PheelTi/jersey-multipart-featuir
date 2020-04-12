@@ -17,6 +17,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.ExceptionMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,8 @@ public abstract class AbstractTest extends JerseyTest {
                 throw new RuntimeException(e);
             }
         }
+
+        Logger.getLogger("org.glassfish.jersey.server.ServerRuntime").setLevel(Level.FINEST);
     }
 
     public static class MultiPartConfigResolver implements
@@ -58,6 +61,10 @@ public abstract class AbstractTest extends JerseyTest {
 
     }
 
+    protected File getFakeFile(Integer nb) {
+        return new File(PROPS.getProperty("fake.file")+nb);
+    }
+
     @Override
     protected Application configure() {
         ResourceConfig rc = new ResourceConfig();
@@ -70,13 +77,18 @@ public abstract class AbstractTest extends JerseyTest {
         rc.register(MultiPartConfigResolver.class);
         rc.register(MultipartFeature.class);
         rc.register(LocalDateParamConverter.class);
-        Stream.of(getResourcesForServer()).filter(Objects::nonNull).forEach(rc::register);
+        rc.register(ExceptionMappers.ThrowableExceptionMapper.class);
+        rc.register(ExceptionMappers.WebApplicationExceptionExceptionMapper.class);
+        rc.register(new LoggingFeature(LOGGER, Level.FINEST, null, null));
+        configureServer(rc);
         return rc;
     }
 
+    protected abstract void configureServer(ResourceConfig rc);
+
     private MultiPartConfig getMultiPartConfig() {
         MultiPartConfig config = new MultiPartConfig();
-        File tempDir = new File(PROPS.getProperty("temp.directory")+ File.separator+"tempDir");
+        File tempDir = new File(PROPS.getProperty("temp.directory"));
         if (!tempDir.exists()) {
             tempDir.mkdirs();
         }
@@ -88,8 +100,6 @@ public abstract class AbstractTest extends JerseyTest {
     protected void customizeMultiPartConfig(MultiPartConfig config) {
 
     }
-
-    protected abstract Class<?>[] getResourcesForServer();
 
 
     @Override
@@ -106,7 +116,7 @@ public abstract class AbstractTest extends JerseyTest {
     protected String postSuccess(String url, MultiPart content) {
         Response resp = post(url, MediaType.MULTIPART_FORM_DATA_TYPE, MediaType.TEXT_PLAIN_TYPE, content);
         Assert.assertEquals("POST response status failed", Response.Status.Family.SUCCESSFUL, resp.getStatusInfo().getFamily());
-        String respStr = resp.getEntity().toString();
+        String respStr = resp.readEntity(String.class);
         Assert.assertFalse(respStr, respStr.startsWith("FAIL: "));
         return respStr;
     }

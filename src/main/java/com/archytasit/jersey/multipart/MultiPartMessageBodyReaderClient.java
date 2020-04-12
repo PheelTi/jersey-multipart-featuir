@@ -69,10 +69,6 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
     }
 
     public MultiPart readFrom(Class<MultiPart> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
-
-//        final String userAgent = httpHeaders.getFirst(HttpHeaders.USER_AGENT);
-//        boolean fileNameFix = userAgent != null && userAgent.contains(" MSIE ");
-
         return readFromParent(null, mediaType, httpHeaders, entityStream);
 
     }
@@ -87,13 +83,8 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
                 StreamingPart part = partIterator.next();
 
                 if (MULTIPART_WILDCARD.isCompatible(part.getContentType())) {
-
                     // nested multipart may have the same name of original multipart.
                     String fieldName = name;
-                    if (config.isKeepNesterFieldNamesHierarchy() || name == null) {
-                        fieldName = part.getFieldName();
-                    }
-
                     multiPart.add(readFromParent(fieldName, part.getContentType(), part.getHeaders(), part.getInputStream()));
                 } else {
                     multiPart.add(bodyPartProvider.provideBodyPart(config, part));

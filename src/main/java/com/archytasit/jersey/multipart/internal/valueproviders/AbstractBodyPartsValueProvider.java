@@ -1,13 +1,17 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
+import com.archytasit.jersey.multipart.BodyPart;
 import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import com.archytasit.jersey.multipart.FormDataBodyPart;
 import com.archytasit.jersey.multipart.MultiPart;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -57,13 +61,29 @@ public abstract class AbstractBodyPartsValueProvider<T> extends AbstractMultiPar
         return applyToBodyParts(request, enhancedBodyParts);
     }
 
+    /**
+     * as stated in https://tools.ietf.org/html/rfc7578#section-4.3
+     * @param part
+     * @return
+     */
+    private List<FormDataBodyPart> getNestedParts(BodyPart part) {
+        List<FormDataBodyPart> result = new ArrayList<>();
+        if (FormDataBodyPart.class.isAssignableFrom(part.getClass())) {
+            result.add((FormDataBodyPart) part);
+        } else if (MultiPart.class.isAssignableFrom(part.getClass())) {
+            ((MultiPart)part).getBodyParts().stream().map(this::getNestedParts).forEach(result::addAll);
+        }
+        return result;
+
+    }
+
     private List<FormDataBodyPart> findFields(MultiPart entity, String... names) {
 
-        // TODO search in nested, nested multipart currently ignored
+
         return entity.getBodyParts().stream().filter(Objects::nonNull)
                 .filter(p -> paramName.equals(p.getName()))
                 .filter(f -> FormDataBodyPart.class.isAssignableFrom(f.getClass()))
-                .map(FormDataBodyPart.class::cast).collect(Collectors.toList());
+                .map(this::getNestedParts).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     /**

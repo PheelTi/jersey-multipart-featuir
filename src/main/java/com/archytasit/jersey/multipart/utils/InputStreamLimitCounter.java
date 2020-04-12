@@ -35,11 +35,6 @@ public class InputStreamLimitCounter extends InputStreamCounter {
         super.addToCounter(num);
 
         if (this.counter > this.limit) {
-            try {
-                StreamUtils.toOutStream(this.is, new NullOutputStream());
-            } catch (IOException e) {
-                Logger.getLogger(InputStreamLimitCounter.class.getName()).log(Level.WARNING, "failed to read the remaining of request", e);
-            }
             onLimitReached.accept(this.is);
         }
         return num;
