@@ -61,7 +61,7 @@ public abstract class AbstractTest extends JerseyTest {
 
     }
 
-    protected File getFakeFile(Integer nb) {
+    protected static File getFakeFile(Integer nb) {
         return new File(PROPS.getProperty("fake.file")+nb);
     }
 

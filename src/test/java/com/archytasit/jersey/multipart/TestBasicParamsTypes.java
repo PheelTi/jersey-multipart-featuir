@@ -130,23 +130,23 @@ public class TestBasicParamsTypes extends AbstractTest {
                 Assert.assertTrue((pojo.file instanceof FormDataFileBodyPart));
 
                 Assert.assertFalse(pojo.file.isFormField());
-                Assert.assertEquals(188, pojo.file.getContentLength());
-                Assert.assertEquals("upload.bin1", pojo.file.getFilename());
+                Assert.assertEquals(getFakeFile(1).length(), pojo.file.getContentLength());
+                Assert.assertEquals(getFakeFile(1).getName(), pojo.file.getFilename());
 
                 Assert.assertEquals(3, pojo.fileList.size());
 
 
                 Assert.assertFalse(pojo.fileList.get(0).isFormField());
-                Assert.assertEquals(188, pojo.fileList.get(0).getContentLength());
-                Assert.assertEquals("upload.bin1", pojo.fileList.get(0).getFilename());
+                Assert.assertEquals(getFakeFile(1).length(), pojo.fileList.get(0).getContentLength());
+                Assert.assertEquals(getFakeFile(1).getName(), pojo.fileList.get(0).getFilename());
 
                 Assert.assertFalse(pojo.fileList.get(1).isFormField());
-                Assert.assertEquals(226, pojo.fileList.get(1).getContentLength());
-                Assert.assertEquals("upload.bin3", pojo.fileList.get(1).getFilename());
+                Assert.assertEquals(getFakeFile(3).length(), pojo.fileList.get(1).getContentLength());
+                Assert.assertEquals(getFakeFile(3).getName(), pojo.fileList.get(1).getFilename());
 
                 Assert.assertFalse(pojo.fileList.get(2).isFormField());
-                Assert.assertEquals(207, pojo.fileList.get(2).getContentLength());
-                Assert.assertEquals("upload.bin2", pojo.fileList.get(2).getFilename());
+                Assert.assertEquals(getFakeFile(2).length(), pojo.fileList.get(2).getContentLength());
+                Assert.assertEquals(getFakeFile(2).getName(), pojo.fileList.get(2).getFilename());
 
 
             } catch (Throwable a) {
