@@ -81,6 +81,7 @@ public abstract class AbstractTest extends JerseyTest {
         rc.register(ExceptionMappers.WebApplicationExceptionExceptionMapper.class);
         rc.register(new LoggingFeature(LOGGER, Level.FINEST, null, null));
         configureServer(rc);
+
         return rc;
     }
 
@@ -128,6 +129,8 @@ public abstract class AbstractTest extends JerseyTest {
     }
 
     private Response post(String url, MediaType requestCT, MediaType responseCT, Object entity) {
+
+
         return target(url).request(responseCT).post(Entity.entity(entity, requestCT));
     }
 

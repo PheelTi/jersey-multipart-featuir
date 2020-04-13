@@ -96,9 +96,9 @@ public class TestMapContentType extends AbstractTest {
 
     private MultiPart getMultiPart(MediaType jsonMediaType) {
 
-        MultiPart multiPart = MultiPart.formDataMultiPart();
-        multiPart.add(new FormDataEntityBodyPart<>("field", Entity.entity("{\"a\":12, \"b\":\"TestString\", \"c\":\"V3\"}", jsonMediaType)));
-        multiPart.add(new FormDataFileBodyPart("file", getFakeFile(1)));
+        MultiPart multiPart = MultiPart.formDataMultiPart()
+            .add(new FormDataEntityBodyPart<>("field", Entity.entity("{\"a\":12, \"b\":\"TestString\", \"c\":\"V3\"}", jsonMediaType)))
+            .add(new FormDataFileBodyPart("file", getFakeFile(1)));
         return multiPart;
     }
 

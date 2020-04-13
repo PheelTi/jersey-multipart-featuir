@@ -2,6 +2,7 @@ package com.archytasit.jersey.multipart;
 
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -17,7 +18,7 @@ public class MultiPart extends BodyPart {
         return Collections.unmodifiableList(bodyParts);
     }
 
-    public void add(BodyPart bodyPart) {
+    public MultiPart add(BodyPart bodyPart) {
         if (bodyPart != null) {
             if (bodyPart instanceof MultiPart
                     && (!HeadersUtils.MULTIPART_WILDCARD_MEDIATYPE.isCompatible(bodyPart.getContentType())
@@ -27,6 +28,7 @@ public class MultiPart extends BodyPart {
             bodyPart.setParent(this);
             bodyParts.add(bodyPart);
         }
+        return this;
     }
 
     public void addAll(List<BodyPart> bodyPart) {
@@ -56,5 +58,9 @@ public class MultiPart extends BodyPart {
         for (BodyPart bp : bodyParts) {
             bp.close();
         }
+    }
+
+    public Entity<MultiPart> entity() {
+        return Entity.entity(this, getContentType());
     }
 }
