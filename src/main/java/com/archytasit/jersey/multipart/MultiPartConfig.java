@@ -9,7 +9,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;

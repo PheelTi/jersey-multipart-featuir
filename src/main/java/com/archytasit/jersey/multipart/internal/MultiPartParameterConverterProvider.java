@@ -2,8 +2,6 @@ package com.archytasit.jersey.multipart.internal;
 
 import org.glassfish.jersey.internal.inject.ParamConverterFactory;
 import org.glassfish.jersey.internal.util.collection.LazyValue;
-import org.glassfish.jersey.model.Parameter;
-import org.glassfish.jersey.server.internal.inject.MultivaluedParameterExtractor;
 
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;

@@ -1,8 +1,8 @@
 package com.archytasit.jersey.multipart;
 
 import com.archytasit.jersey.multipart.bodypartproviders.IFormDataBodyPartProvider;
-import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.parsers.IRequestParser;
+import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.parsers.StreamingPartIterator;
 
 import javax.inject.Inject;

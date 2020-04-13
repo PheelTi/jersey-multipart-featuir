@@ -1,9 +1,9 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
 import com.archytasit.jersey.multipart.BodyPart;
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import com.archytasit.jersey.multipart.FormDataBodyPart;
 import com.archytasit.jersey.multipart.MultiPart;
+import com.archytasit.jersey.multipart.annotations.FormDataParam;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;
 
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

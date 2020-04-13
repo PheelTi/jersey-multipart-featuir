@@ -1,8 +1,8 @@
 package com.archytasit.jersey.multipart.parsers.apache;
 
 import com.archytasit.jersey.multipart.ContentDisposition;
-import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.parsers.IRequestParser;
+import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.parsers.StreamingPartIterator;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 import org.apache.commons.fileupload.FileItemIterator;

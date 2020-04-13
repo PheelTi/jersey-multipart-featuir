@@ -1,7 +1,7 @@
 package com.archytasit.jersey.multipart.bodypartproviders;
 
-import com.archytasit.jersey.multipart.MultiPartConfig;
 import com.archytasit.jersey.multipart.FormDataStringBodyPart;
+import com.archytasit.jersey.multipart.MultiPartConfig;
 import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 import com.archytasit.jersey.multipart.utils.StreamUtils;

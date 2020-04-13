@@ -1,7 +1,7 @@
 package com.archytasit.jersey.multipart.internal.valueproviders;
 
-import com.archytasit.jersey.multipart.annotations.Map;
 import com.archytasit.jersey.multipart.FormDataBodyPart;
+import com.archytasit.jersey.multipart.annotations.Map;
 import com.archytasit.jersey.multipart.utils.HeadersUtils;
 import org.glassfish.jersey.model.Parameter;
 import org.glassfish.jersey.server.ContainerRequest;

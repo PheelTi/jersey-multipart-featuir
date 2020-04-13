@@ -1,9 +1,9 @@
 package com.archytasit.jersey.multipart.internal;
 
-import com.archytasit.jersey.multipart.annotations.FormDataParam;
-import com.archytasit.jersey.multipart.internal.valueproviders.*;
 import com.archytasit.jersey.multipart.FormDataBodyPart;
 import com.archytasit.jersey.multipart.MultiPart;
+import com.archytasit.jersey.multipart.annotations.FormDataParam;
+import com.archytasit.jersey.multipart.internal.valueproviders.*;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.internal.inject.AbstractValueParamProvider;

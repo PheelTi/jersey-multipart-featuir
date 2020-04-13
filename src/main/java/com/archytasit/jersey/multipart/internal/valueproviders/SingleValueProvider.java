@@ -13,7 +13,6 @@ import javax.ws.rs.ext.MessageBodyReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
