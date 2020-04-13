@@ -17,7 +17,7 @@ This implementation is largely inspired from the current Jersey 2.x implementati
       Temporary files are kept for the whole duration of the request, and are deleted after the response is finished. You may change this
       behaviour (see below).
     - **Value resolvers**
-      - This implementation deals more nicely with collection of parameters
+      - This implementation deals more nicely with collection of parameters, and can use MessageBodyWorkers of single object for collection of objects.
       - More control on the annotation `@FormDataParam` : filter on the field: type, content-type, or to map a content-type to another.    
   - **CLIENT SIDE**
     - Custom `ParamConverters` are taken into account to serialize the response.
