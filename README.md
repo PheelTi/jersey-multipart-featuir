@@ -30,12 +30,13 @@ in your pom.xml:
     <dependency>
         <artifactId>jersey-multipart-upload-core-feature</artifactId>
         <groupId>io.github.archytas-it</groupId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
     </dependency>
 ```
 
-It is also recommended to remove the Jersey multipart official implementation. Some classes/annotations share the same names, but not located in same
-packages. They will not conflict but it will be easier for the developer to import the right one.
+It is also recommended to remove the Jersey multipart official implementation. Ther won't be any conflict.
+But, as some classes/annotations share the same names (but not located in same
+packages) it will be easier for the developer to import the right one.
 
 ### Server side
 
@@ -134,12 +135,18 @@ A field is considered to be an attachement if it has a filename.
 
 ### option `mapContentTypeAs()`
 
-For complex data transformation, allows to map some content types to others.
-example, if you want to consider every `text/plain` content type to be parsed as Json, if you have a json media provider.
+For complex data transformation, allows to map some content types to others, to use some specific `MessageBodyReader`
+For example, if you may want to consider every `text/plain` content type to be parsed as JSON, if you have a json media provider.
 
-`@FormDataParam(value = "field", mapContentTypeAs = {@Map(to= MediaType.APPLICATION_JSON)})`
+```
+@FormDataParam(value = "field", mapContentTypeAs = {
+      @Map(to = MediaType.APPLICATION_JSON)
+  }) List<MyJsonContent> content
+```
 
-You can add a `from=` inside the `@Map` to restrict the mapping. By default `from=*/*`. The only first declared matching found will be executed, they are not call recursively.
+You can set a `from=` inside the `@Map` to restrict the mapping. By default `from=*/*`.
+
+The only first declared that matches the content-type will be executed, they are not called recursively.
 
 ### option `filterContentType()`
 
@@ -152,10 +159,10 @@ You can add a `from=` inside the `@Map` to restrict the mapping. By default `fro
   - parts storage class
 
 The parser is in charge to implement an "iterator" which provides data in an internal model `StreamingPart` 
-containing all metadatats of the part, and an `InputStream` providing the part content.
+containing all metadatas of the part, and an `InputStream` providing the part content.
 
 The second one is in charge to consume the content of the `StreamingPart` and to provide an
- instance of `FormDataBodyPart` 
+instance of `FormDataBodyPart` 
 
 You can set one or the other during the feature registration:
 
@@ -178,7 +185,7 @@ The default implementation uses [Apache commons-fileupload](http://commons.apach
 
 If you implement yours, pay attention to provide parts as they are sequentially read in a streaming way.
 This component **MUST NOT** store temporarly the whole part contents in memory or in the file system,
-but only stream parts as they are received in the request `InputStream`.
+but only stream parts as they are received in the request input stream.
 The way each parts are stored is the responsability of the parts storage implementation of `IFormDataBodyPartProvider` (see below).
 
   ***To be more documented***
@@ -189,9 +196,9 @@ The way each parts are stored is the responsability of the parts storage impleme
 
   The default implementation is:
   - Form field part
-     - if size below value specified in the *memorySizeLimit* parameter (10kB by default), part stored **in memory** as a `FormDataStringBodyPart`
+     - if size below value specified in the *memorySizeLimit* parameter (10kB by default), part stored **in memory**
      - otherwise, part is stored in a temporary file.
-  - Attachment part is stored in a temporary file.
+  - Attachment part is always stored in a temporary file.
      
 Every implementation is in charge to provide an object that is inherited from `FormDataBodyParam`.
 The is currenctly 4 implementations of `IFormDataBodyPartProvider`:
@@ -199,7 +206,7 @@ The is currenctly 4 implementations of `IFormDataBodyPartProvider`:
   - `FieldOrAttachementBodyPartProvider` delegates the job to two different ones, depending if the part is a form-field or not (attachment)
   - `MemoryLimitBodyPartProvider` delegates the job to two different ones, depending of the size of the stored content
   - `FormDataFileBodyPartProvider` stores the content in a `String` in a `FormDataStringBodyPart`
-  - `FormDataStringBodyPartProvider`stores the content in a temporary file on the filesystem in a `FormDataFileBodyPart`
+  - `FormDataStringBodyPartProvider` stores the content in a temporary file on the filesystem in a `FormDataFileBodyPart`
      
 You can write your own `FormDataBodyPart` sub-class with your own `IFormDataBodyPartProvider`.
 
