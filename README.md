@@ -2,7 +2,7 @@
 
 # jersey-multipart-upload-core-feature
 
-##Introduction 
+## Introduction 
 
 Alternative Multipart implementation for Jax-RS Jersey 2.x.
 This implementation is largely inspired from the current Jersey 2.x implementation, with the following differences:
@@ -21,8 +21,8 @@ This implementation is largely inspired from the current Jersey 2.x implementati
       - More control on the annotation `@FormDataParam`: filter on the field: type, content-type, or to map a content-type to another.    
   - **CLIENT SIDE**
     - Custom `ParamConverters` are taken into account to serialize the response.
-    
-##Quick-start
+
+## Quick-start
 
 in your pom.xml:
 
@@ -56,7 +56,8 @@ In your resource:
 ```java
 @Path("/upload")
 public class MyResource {
-
+       
+       @POST
        @Consumes("multipart/*")
        public void upload(
                @FormDataParam("field") String field,
