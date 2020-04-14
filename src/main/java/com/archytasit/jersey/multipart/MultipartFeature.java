@@ -1,10 +1,7 @@
 package com.archytasit.jersey.multipart;
 
 import com.archytasit.jersey.multipart.annotations.FormDataParam;
-import com.archytasit.jersey.multipart.bodypartproviders.FieldOrAttachementBodyPartProvider;
-import com.archytasit.jersey.multipart.bodypartproviders.FormDataFileBodyPartProvider;
-import com.archytasit.jersey.multipart.bodypartproviders.FormDataStringBodyPartProvider;
-import com.archytasit.jersey.multipart.bodypartproviders.IFormDataBodyPartProvider;
+import com.archytasit.jersey.multipart.bodypartproviders.*;
 import com.archytasit.jersey.multipart.internal.FormDataParamValueParamProvider;
 import com.archytasit.jersey.multipart.internal.MultiPartParameterConverterProvider;
 import com.archytasit.jersey.multipart.parsers.IRequestParser;
@@ -68,13 +65,11 @@ public class MultipartFeature implements Feature {
         context.register(new AbstractBinder() {
             @Override
             protected void configure() {
-                if (bodyPartProvider == null) {
-                    bind(new FieldOrAttachementBodyPartProvider(new FormDataStringBodyPartProvider(), new FormDataFileBodyPartProvider())).to(IFormDataBodyPartProvider.class);
-                }
+                bind(bodyPartProvider != null ? bodyPartProvider : new FieldOrAttachementBodyPartProvider(
+                            new MemoryLimitBodyPartProvider(null, new FormDataStringBodyPartProvider(), new FormDataFileBodyPartProvider()), new FormDataFileBodyPartProvider())).to(IFormDataBodyPartProvider.class);
 
-                if (requestParser == null) {
-                    bind(new ApachePartParser()).to(IRequestParser.class);
-                }
+                bind(requestParser != null ? requestParser : new ApachePartParser()).to(IRequestParser.class);
+
             }
         });
 

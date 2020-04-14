@@ -36,6 +36,9 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
     private static final MediaType MULTIPART_WILDCARD = new MediaType("multipart", null);
 
 
+    /**
+     * The Config.
+     */
     protected MultiPartConfig config;
 
     @Inject
@@ -73,6 +76,17 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
 
     }
 
+    /**
+     * Read from parent multi part.
+     *
+     * @param name         the name
+     * @param mediaType    the media type
+     * @param httpHeaders  the http headers
+     * @param entityStream the entity stream
+     * @return the multi part
+     * @throws IOException             the io exception
+     * @throws WebApplicationException the web application exception
+     */
     public MultiPart readFromParent(String name, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
 
         MultiPart multiPart = new MultiPart(name, mediaType, httpHeaders, ContentDisposition.fromHeaderValues(name, httpHeaders));

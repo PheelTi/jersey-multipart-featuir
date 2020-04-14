@@ -20,8 +20,6 @@ import java.util.logging.Logger;
 public class MultiPartConfig {
 
 
-
-
     /**
      * The enum Clean resource mode.
      */
@@ -42,6 +40,7 @@ public class MultiPartConfig {
 
     private String tempFileDirectory = System.getProperty("java.io.tmpdir");
     private String tempFilePrefix = "MULTIPART_";
+    private int memorySizeLimit = 10 * 1024;
     private String tempFileSuffix = null;
     private Charset defaultCharset = Charset.forName("ISO-8859-1");
     private long requestSizeLimit = -1;
@@ -100,8 +99,22 @@ public class MultiPartConfig {
         return requestSizeLimit;
     }
 
+    /**
+     * Gets default charset.
+     *
+     * @return the default charset
+     */
     public Charset getDefaultCharset() {
         return defaultCharset;
+    }
+
+    /**
+     * Gets memory size limit.
+     *
+     * @return the memory size limit
+     */
+    public int getMemorySizeLimit() {
+        return memorySizeLimit;
     }
 
     /**
@@ -190,9 +203,25 @@ public class MultiPartConfig {
         return this;
     }
 
+    /**
+     * Default charset multi part config.
+     *
+     * @param defaultCharset the default charset
+     * @return the multi part config
+     */
     public MultiPartConfig defaultCharset(Charset defaultCharset) {
         this.defaultCharset = defaultCharset;
         return this;
     }
 
+    /**
+     * Memory size limit multi part config.
+     *
+     * @param memorySizeLimit the memory size limit
+     * @return the multi part config
+     */
+    public MultiPartConfig memorySizeLimit(int memorySizeLimit) {
+        this.memorySizeLimit = memorySizeLimit;
+        return this;
+    }
 }

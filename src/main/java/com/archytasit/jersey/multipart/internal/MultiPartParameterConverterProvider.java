@@ -8,10 +8,18 @@ import javax.ws.rs.ext.ParamConverterProvider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+/**
+ * The type Multi part parameter converter provider.
+ */
 public class MultiPartParameterConverterProvider implements ParamConverterProvider {
 
     private final LazyValue<ParamConverterFactory> paramConverterFactory;
 
+    /**
+     * Instantiates a new Multi part parameter converter provider.
+     *
+     * @param paramConverterFactory the param converter factory
+     */
     public MultiPartParameterConverterProvider(LazyValue<ParamConverterFactory> paramConverterFactory) {
         this.paramConverterFactory = paramConverterFactory;
     }

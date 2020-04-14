@@ -4,6 +4,7 @@ import com.archytasit.jersey.multipart.ContentDisposition;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
@@ -28,12 +29,13 @@ public class StreamingPart {
     /**
      * Instantiates a new Streaming part.
      *
-     * @param fieldName   the field name
-     * @param contentType the content type
-     * @param headers     the headers
-     * @param isFormField the is form field
-     * @param fileName    the file name
-     * @param inputStream the input stream
+     * @param fieldName          the field name
+     * @param contentType        the content type
+     * @param contentDisposition the content disposition
+     * @param headers            the headers
+     * @param isFormField        the is form field
+     * @param fileName           the file name
+     * @param inputStream        the input stream
      */
     public StreamingPart(String fieldName, MediaType contentType, ContentDisposition contentDisposition, MultivaluedMap<String, String> headers, boolean isFormField, String fileName, InputStream inputStream) {
         this.fieldName = fieldName;
@@ -44,6 +46,7 @@ public class StreamingPart {
         this.inputStream = inputStream;
         this.contentDisposition = contentDisposition;
     }
+
 
     /**
      * Gets field name.
@@ -99,6 +102,11 @@ public class StreamingPart {
         return inputStream;
     }
 
+    /**
+     * Gets content disposition.
+     *
+     * @return the content disposition
+     */
     public ContentDisposition getContentDisposition() {
         return contentDisposition;
     }

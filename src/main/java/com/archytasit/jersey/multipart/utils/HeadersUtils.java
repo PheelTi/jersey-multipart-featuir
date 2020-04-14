@@ -19,12 +19,15 @@ import java.util.stream.StreamSupport;
 public class HeadersUtils {
 
 
+    /**
+     * The constant MULTIPART_WILDCARD_MEDIATYPE.
+     */
     public static final MediaType MULTIPART_WILDCARD_MEDIATYPE = new MediaType("multipart", MediaType.MEDIA_TYPE_WILDCARD);;
 
     /**
      * Gets media type.
      *
-     * @param contentType  the content type
+     * @param contentType the content type
      * @return the media type
      */
     public static MediaType getMediaType(String contentType) {
@@ -39,6 +42,12 @@ public class HeadersUtils {
     }
 
 
+    /**
+     * Gets charset.
+     *
+     * @param mediaType the media type
+     * @return the charset
+     */
     public static Charset getCharset(MediaType mediaType) {
 
         if (mediaType !=null && mediaType.getParameters().get(HttpHeaderParameters.ContentType.CHARSET) != null) {

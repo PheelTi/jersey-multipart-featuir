@@ -67,7 +67,11 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
     private MultiPartParameterConverterProvider paramConverterProvider;
 
 
-
+    /**
+     * Instantiates a new Multi part message body writer.
+     *
+     * @param providers the providers
+     */
     public MultiPartMessageBodyWriter(@Context final Providers providers) {
         this.providers = providers;
     }
@@ -145,6 +149,18 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
     }
 
 
+    /**
+     * Write multi part.
+     *
+     * @param entity         the entity
+     * @param boundaryString the boundary string
+     * @param annotations    the annotations
+     * @param mediaType      the media type
+     * @param headers        the headers
+     * @param stream         the stream
+     * @throws IOException             the io exception
+     * @throws WebApplicationException the web application exception
+     */
     public void writeMultiPart(final MultiPart entity,
         final String boundaryString,
         final Annotation[] annotations,

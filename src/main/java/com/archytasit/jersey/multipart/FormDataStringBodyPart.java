@@ -14,6 +14,13 @@ public final class FormDataStringBodyPart extends FormDataBodyPart<String> {
 
     private Charset charset;
 
+    /**
+     * Instantiates a new Form data string body part.
+     *
+     * @param part        the part
+     * @param charset     the charset
+     * @param stringValue the string value
+     */
     public FormDataStringBodyPart(StreamingPart part, Charset charset, String stringValue) {
         super(part, stringValue.length(), stringValue);
         this.charset = charset;

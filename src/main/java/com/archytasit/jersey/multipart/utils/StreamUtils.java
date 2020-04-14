@@ -7,7 +7,10 @@ import java.io.*;
  */
 public class StreamUtils {
 
-    private static final int BUFFER_SIZE = 8 * 1024;
+    /**
+     * The constant BUFFER_SIZE.
+     */
+    public static final int BUFFER_SIZE = 8 * 1024;
 
     /**
      * To out stream.

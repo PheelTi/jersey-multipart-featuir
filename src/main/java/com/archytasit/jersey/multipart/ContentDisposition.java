@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The type Content disposition.
+ */
 public class ContentDisposition {
 
 
@@ -25,12 +28,26 @@ public class ContentDisposition {
     private Date readDate;
     private long size = -1;
 
+    /**
+     * With file name content disposition.
+     *
+     * @param name     the name
+     * @param fileName the file name
+     * @return the content disposition
+     */
     protected static ContentDisposition withFileName(String name, String fileName) {
         ContentDisposition contentDisposition =  new ContentDisposition(name);
         contentDisposition.fileName = fileName;
         return contentDisposition;
     }
 
+    /**
+     * From header values content disposition.
+     *
+     * @param name    the name
+     * @param headers the headers
+     * @return the content disposition
+     */
     public static ContentDisposition fromHeaderValues(final String name, final MultivaluedMap<String, String> headers) {
         if (headers != null && headers.getFirst(HttpHeaders.CONTENT_DISPOSITION.toLowerCase()) != null) {
             try {
@@ -43,6 +60,14 @@ public class ContentDisposition {
     }
 
 
+    /**
+     * From header value content disposition.
+     *
+     * @param name   the name
+     * @param header the header
+     * @return the content disposition
+     * @throws ParseException the parse exception
+     */
     protected static ContentDisposition fromHeaderValue(final String name, final String header) throws ParseException {
 
         HttpHeaderReader reader = HttpHeaderReader.newInstance(header);
@@ -64,6 +89,12 @@ public class ContentDisposition {
     }
 
 
+    /**
+     * Default value content disposition.
+     *
+     * @param name the name
+     * @return the content disposition
+     */
     public static ContentDisposition defaultValue(String name) {
         return new ContentDisposition(name);
     }
@@ -83,6 +114,11 @@ public class ContentDisposition {
         return toStringBuffer().toString();
     }
 
+    /**
+     * To string buffer string builder.
+     *
+     * @return the string builder
+     */
     protected StringBuilder toStringBuffer() {
         final StringBuilder sb = new StringBuilder();
 
@@ -98,18 +134,39 @@ public class ContentDisposition {
         return sb;
     }
 
+    /**
+     * Add string parameter.
+     *
+     * @param sb   the sb
+     * @param name the name
+     * @param p    the p
+     */
     protected void addStringParameter(final StringBuilder sb, final String name, final String p) {
         if (p != null) {
             sb.append("; ").append(name).append("=\"").append(p).append("\"");
         }
     }
 
+    /**
+     * Add date parameter.
+     *
+     * @param sb   the sb
+     * @param name the name
+     * @param p    the p
+     */
     protected void addDateParameter(final StringBuilder sb, final String name, final Date p) {
         if (p != null) {
             sb.append("; ").append(name).append("=\"").append(HttpDateFormat.getPreferredDateFormat().format(p)).append("\"");
         }
     }
 
+    /**
+     * Add long parameter.
+     *
+     * @param sb   the sb
+     * @param name the name
+     * @param p    the p
+     */
     protected void addLongParameter(final StringBuilder sb, final String name, final Long p) {
         if (p != -1) {
             sb.append("; ").append(name).append('=').append(Long.toString(p));
