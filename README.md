@@ -13,7 +13,7 @@ This implementation is largely inspired from the current Jersey 2.x implementati
       - MIME parts parsing is customisable, and you can provide your own implementation (see below)
     - __MIME Parts storing__
       - storing each MIME parts is customisable, and you can provide your own implementation (see below)
-      - By default, all form fields are stored in memory, and all attachments are stored in temporary files on the file system.
+      - By default, all form fields are stored in memory if their content size is below a thershold (10kB) or in a temporary file, and all attachments are stored in temporary files on the file system.
       Temporary files are kept for the whole duration of the request, and are deleted after the response is finished. You may change this
       behaviour (see below).
     - **Value resolvers**
@@ -34,7 +34,7 @@ in your pom.xml:
     </dependency>
 ```
 
-It is also recommended to remove the Jersey multipart official implementation. Ther won't be any conflict.
+It is also recommended to remove the Jersey multipart official implementation. There won't be any conflict.
 But, as some classes/annotations share the same names (but not located in same
 packages) it will be easier for the developer to import the right one.
 
@@ -76,7 +76,7 @@ You can use collections to get several parts named identically. Supported collec
 The typing of the parameter is important, and if a `MessageBodyReader` for the particular content-type, or an extractor (via a `ParamConverter` for 
 instance) exists, the field will be instanciated as desired.
 
-It is also possible to use the `FormDataBodyPart` or any sub-class. If a sub-class is used, 
+It is also possible to use the `FormDataBodyPart` or any sub-class (even your own implementation with its storage provider). If a sub-class is used, 
 only the ones that are instances of the desired type will be returned.
 
 Be careful if you use a type, or an invalid `FormDataBodyPart` sub-class, you will get some *null* values.
@@ -87,7 +87,8 @@ Be careful if you use a type, or an invalid `FormDataBodyPart` sub-class, you wi
     Client client = ClientBuilder.newClient(new ClientConfig().register(MultipartFeature.class));
 
     MultiPart multiPart = MultiPart.formDataMultiPart()
-        .add(new FormDataEntityBodyPart<>("field", Entity.text("foo bar")))
+        .add(new FormDataEntityBodyPart("textfield", Entity.text("foo bar")))
+        .add(new FormDataEntityBodyPart("jsonfield", Entity.json(myJsonObject)))
         .add(new FormDataFileBodyPart("file", new File("foo.txt")))
         .add(new FormDataFileBodyPart("file", new File("bar.txt")));
     
@@ -95,7 +96,7 @@ Be careful if you use a type, or an invalid `FormDataBodyPart` sub-class, you wi
     
 ```
 
-You can fill parts of a `MultiPart` object with any objects that is inherited `BodyPart`, which includes:
+You can fill parts of a `MultiPart` object with any objects that inherits from `BodyPart`, which includes:
 
 - `FormDataBodyPart` abstract base class for any form-data field. 
 - `FormDataStringBodyPart` field as a String
@@ -116,7 +117,7 @@ When using `FormDataEntityBodyPart`, a `MessageBodyWriter` for this type and con
 
 | Parameter | Default value | Description |
 |----------| ------------|------------|
-| tempFileDirectory | value of sytem property `java.io.tmpdir` | placee wher temporary files are created if needed.
+| tempFileDirectory | value of sytem property `java.io.tmpdir` | place where temporary files are created if needed.
 | tempFilePrefix | `MULTIPART_` | temporary files prefix |
 | tempFileSuffix| *null* | temporary files prefix |
 | memorySizeLimit | 10240 bytes (10k) | Used by default form field provider to indicate the threshold to switch between in memory or file storage. Ignored if < 0 |
