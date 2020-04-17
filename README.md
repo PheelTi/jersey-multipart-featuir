@@ -1,4 +1,5 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![CircleCI](https://circleci.com/gh/archytas-it/jersey-multipart-upload-core-feature.svg?style=shield)](https://circleci.com/gh/archytas-it/jersey-multipart-upload-core-feature)
 
 # jersey-multipart-upload-core-feature
 
