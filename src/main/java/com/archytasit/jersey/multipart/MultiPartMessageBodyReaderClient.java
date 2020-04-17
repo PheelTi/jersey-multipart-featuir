@@ -4,6 +4,9 @@ import com.archytasit.jersey.multipart.bodypartproviders.IFormDataBodyPartProvid
 import com.archytasit.jersey.multipart.parsers.IRequestParser;
 import com.archytasit.jersey.multipart.parsers.StreamingPart;
 import com.archytasit.jersey.multipart.parsers.StreamingPartIterator;
+import com.archytasit.jersey.multipart.utils.InputStreamLimitCounter;
+import com.archytasit.jersey.multipart.utils.StreamUtils;
+import org.apache.commons.io.output.NullOutputStream;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,11 +20,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -54,18 +60,36 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
      */
     @Inject
     public MultiPartMessageBodyReaderClient(@Context final Providers providers) {
-        this.config = getInstanceFromContext(providers, MultiPartConfig.class, MultiPartConfig::new);
+        // finding MultiPartConfig in context
+        final ContextResolver<MultiPartConfig> contextResolver =
+                providers.getContextResolver(MultiPartConfig.class, MediaType.WILDCARD_TYPE);
+        if (contextResolver != null) {
+            this.config = contextResolver.getContext(this.getClass());
+        }
+        if (this.config == null) {
+            // otherwire using default implementation
+            this.config = new MultiPartConfig();
+        }
+        checkMultiPartConfig();
     }
 
-    private <T> T getInstanceFromContext(Providers providers, Class<T> clazz, Supplier<T> defaultValueSupplier) {
-        final ContextResolver<T> contextResolver =
-                providers.getContextResolver(clazz, MediaType.WILDCARD_TYPE);
-        T instance = null;
-        if (contextResolver != null) {
-            instance = contextResolver.getContext(this.getClass());
+    private void checkMultiPartConfig() {
+        File tempDir = new File(this.config.getTempFileDirectory());
+        if (!tempDir.exists() || !tempDir.isDirectory()) {
+            throw new IllegalArgumentException("The specified tempDirectory in MultiPartConfig must exists and be a directory.");
         }
-        return instance != null ? instance : defaultValueSupplier.get();
+        File temp = null;
+        try {
+            temp = File.createTempFile(config.getTempFilePrefix(), config.getTempFileSuffix(), tempDir);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("The specified tempDirectory in MultiPartConfig is not writable.", e);
+        } finally {
+            if (temp != null) {
+                temp.delete();
+            }
+        }
     }
+
 
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return mediaType.isCompatible(MediaType.MULTIPART_FORM_DATA_TYPE) && MultiPart.class.isAssignableFrom(type);
@@ -89,25 +113,39 @@ public class MultiPartMessageBodyReaderClient implements MessageBodyReader<Multi
      */
     public MultiPart readFromParent(String name, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
 
-        MultiPart multiPart = new MultiPart(name, mediaType, httpHeaders, ContentDisposition.fromHeaderValues(name, httpHeaders));
+        try {
+            // preparing main object
+            MultiPart multiPart = new MultiPart(name, mediaType, httpHeaders, ContentDisposition.fromHeaderValues(name, httpHeaders));
 
-        StreamingPartIterator partIterator = requestParser.getPartIterator(mediaType, httpHeaders, entityStream);
-        if (partIterator != null) {
-            while (partIterator.hasNext()) {
-                StreamingPart part = partIterator.next();
-
-                if (MULTIPART_WILDCARD.isCompatible(part.getContentType())) {
-                    // nested multipart may have the same name of original multipart.
-                    String fieldName = name;
-                    multiPart.add(readFromParent(fieldName, part.getContentType(), part.getHeaders(), part.getInputStream()));
-                } else {
-                    multiPart.add(bodyPartProvider.provideBodyPart(config, part));
+            // getting the "iterator" through the parts
+            StreamingPartIterator partIterator = requestParser.getPartIterator(mediaType, httpHeaders, entityStream);
+            if (partIterator != null) {
+                while (partIterator.hasNext()) {
+                    StreamingPart part = partIterator.next();
+                    // if the part is a multipart, calling this recursively
+                    if (MULTIPART_WILDCARD.isCompatible(part.getContentType())) {
+                        // nested multipart may have the same name of original multipart.
+                        String fieldName = name;
+                        multiPart.add(readFromParent(fieldName, part.getContentType(), part.getHeaders(), part.getInputStream()));
+                    } else {
+                        // else proving the part bay the configured provider.
+                        FormDataBodyPart storedPart = bodyPartProvider.provideBodyPart(config, part);
+                        trackResourceForClean(storedPart);
+                        multiPart.add(storedPart);
+                    }
                 }
             }
+            return multiPart;
+
+        } finally {
+            // redind the remaining of input for the client tp process the response correctly
+            StreamUtils.toOutStream(entityStream, new NullOutputStream());
         }
 
-        return multiPart;
     }
 
+    protected void trackResourceForClean(FormDataBodyPart storedPart) {
+        // nothing to do in client, the cleaning of resources is for server side
+    }
 }
 

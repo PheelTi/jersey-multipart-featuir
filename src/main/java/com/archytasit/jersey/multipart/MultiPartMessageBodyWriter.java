@@ -120,14 +120,16 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
 
 
 
-
+        // generate a boundary if missing
         String boundaryString = getOrGenerateBoundary(entity);
+        //normalize headers of entity
         normaliseHeaders(entity);
         entity.getHeaders().entrySet().forEach((e) -> {
             headers.remove(e.getKey());
             headers.addAll(e.getKey(), e.getValue());
         });
 
+        // overriding the content-Type
         headers.putSingle("Content-Type", entity.getContentType().toString());
 
         // If our entity is not nested, make sure the MIME-Version header is set.
@@ -136,7 +138,7 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
             headers.putSingle("MIME-Version", "1.0");
         }
 
-
+        // common multipart writer, takes care the main and the nested multipart
         writeMultiPart(
                 entity,
                 boundaryString,
@@ -173,31 +175,20 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
             throw new IllegalArgumentException();
         }
 
-        // If our entity is not nested, make sure the MIME-Version header is set.
-        if (entity.getParent() == null) {
-            final Object value = headers.getFirst("MIME-Version");
-            if (value == null) {
-                headers.putSingle("MIME-Version", "1.0");
-            }
-        }
 
         // Initialize local variables we need.
         final Writer writer = new BufferedWriter(new OutputStreamWriter(stream, MessageUtils.getCharset(mediaType)));
-
-
-
-
 
         // Iterate through the body parts for this message.
         boolean isFirst = true;
         for (final BodyPart bodyPart : entity.getBodyParts()) {
 
-
-
+            // subboundarey if nested multipart
             String subBoundary = null;
             if (bodyPart instanceof MultiPart) {
                 subBoundary = getOrGenerateBoundary((MultiPart)bodyPart);
             }
+            //normalize headers of entity
             normaliseHeaders(bodyPart);
 
             // Write the leading boundary string
@@ -217,7 +208,8 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
             }
 
             final MultivaluedMap<String, String> bodyHeaders = bodyPart.getHeaders();
-            // Iterate for the nested body parts
+
+            // Writes the headers of the current part
             for (final Map.Entry<String, List<String>> entry : bodyHeaders.entrySet()) {
                 // Write this header and its value(s)
                 writer.write(entry.getKey());
@@ -234,14 +226,15 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                 }
                 writer.write("\r\n");
             }
-
             // Mark the end of the headers for this body part
             writer.write("\r\n");
             writer.flush();
 
+            // if the current part is a multipart
             if (MultiPart.class.isAssignableFrom(bodyPart.getClass())) {
-                MultiPart nestedMultiPart = (MultiPart) bodyPart;
 
+                // calling this method recursively
+                MultiPart nestedMultiPart = (MultiPart) bodyPart;
                 writeMultiPart(nestedMultiPart,
                         subBoundary,
                     annotations,
@@ -250,10 +243,12 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                 stream);
 
             } else if (FormDataBodyPart.class.isAssignableFrom(bodyPart.getClass())) {
-
+                // else if it is a well known FormDataBodyPart
                 FormDataBodyPart formBodyPart = (FormDataBodyPart) bodyPart;
 
                 // Write the entity for this body part
+
+                // first trying to find a know messageBodyWriter for this type
                 Object bodyEntity = formBodyPart.getStoreEntity();
                 if (bodyEntity == null) {
                     throw new IllegalArgumentException();
@@ -267,9 +262,11 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                         EMPTY_ANNOTATIONS,
                         bodyMediaType);
 
+                // if no body writer, trying to find a param converter and then a body writer for String
                 if (bodyWriter == null) {
                     final ParamConverter<Object> paramConverter = paramConverterProvider.getConverter(bodyClass, genericBodyType, null);
                     if (paramConverter != null) {
+                        //
                         bodyEntity = paramConverter.toString(bodyEntity);
                         bodyClass = String.class;
                         genericBodyType = String.class;
@@ -280,6 +277,7 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                                 bodyMediaType);
                     }
                 }
+                // if found : writing
                 if (bodyWriter != null) {
                     bodyWriter.writeTo(
                             bodyEntity,
@@ -291,6 +289,7 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
                             stream
                     );
                 } else {
+                    // else not implemented
                     throw new IllegalArgumentException();
                 }
 
@@ -308,6 +307,11 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
     }
 
 
+    /**
+     * Generates a boundary if missing, and sets it on the Content-Type
+     * @param entity
+     * @return
+     */
     private String getOrGenerateBoundary(MultiPart entity) {
 
         String boundary = entity.getContentType().getParameters().get(HttpHeaderParameters.ContentType.BOUNDARY);
@@ -322,6 +326,10 @@ public class MultiPartMessageBodyWriter implements MessageBodyWriter<MultiPart> 
 
     }
 
+    /**
+     * Sets Specific Part Headers (Content-Type and Content-Disposition) in the headers Map.
+     * @param entity
+     */
     private void normaliseHeaders(BodyPart entity) {
 
         if (entity.getContentDisposition() != null) {

@@ -8,12 +8,12 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import javax.inject.Inject;
 
 /**
- * The type Resource cleaning listener.
+ * Resource cleaning listener, whic triggers the resource cleaning
  */
 public class ResourceCleaningListener implements ApplicationEventListener {
 
     @Inject
-    private ResourceCleaner tempFileCleaner;
+    private ResourceCleaner resourceCleaner;
 
     @Override
     public void onEvent(ApplicationEvent event) {
@@ -25,7 +25,7 @@ public class ResourceCleaningListener implements ApplicationEventListener {
         return (e) -> {
             switch (e.getType()) {
                 case FINISHED:
-                    tempFileCleaner.cleanRequest(e.getContainerRequest(), e.isSuccess());
+                    resourceCleaner.cleanRequest(e.getContainerRequest(), e.isSuccess());
                     break;
             }
         };

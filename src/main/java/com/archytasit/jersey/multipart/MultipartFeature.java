@@ -36,7 +36,7 @@ public class MultipartFeature implements Feature {
 
 
     /**
-     * With body part provider multipart feature.
+     * sets a custom body part provider.
      *
      * @param bodyPartProvider the body part provider
      * @return the multipart feature
@@ -48,7 +48,7 @@ public class MultipartFeature implements Feature {
 
 
     /**
-     * With request parser multipart feature.
+     * sets a custom request parser.
      *
      * @param requestParser the request parser
      * @return the multipart feature
@@ -62,6 +62,8 @@ public class MultipartFeature implements Feature {
     public boolean configure(FeatureContext context) {
         final RuntimeType runtime = context.getConfiguration().getRuntimeType();
 
+        // binding bodyPartProvider and requestParser in Jersey injection framework (HK2)
+        // sets default implementation for each if not set before configure.
         context.register(new AbstractBinder() {
             @Override
             protected void configure() {
@@ -74,21 +76,26 @@ public class MultipartFeature implements Feature {
         });
 
 
+        // on sever side
         if (RuntimeType.SERVER.equals(runtime)) {
-
 
 
             context.register(new AbstractBinder() {
                 @Override
                 protected void configure() {
 
+                    // binding ResourceCleaner in HK2
                     bindAsContract(ResourceCleaner.class);
 
+                    // this allos to extract potentially multivalued parameters from incoming requests (like headers, but FormDataParam also)
                     Provider<MultivaluedParameterExtractorProvider> extractorProvider =
                             createManagedInstanceProvider(MultivaluedParameterExtractorProvider.class);
+
+                    // request provider for getting request in message body workers
                     Provider<ContainerRequest> requestProvider =
                             createManagedInstanceProvider(ContainerRequest.class);
 
+                    // the value supplier for annotated methods or fields annotated with FormDataParam
                     FormDataParamValueParamProvider valueSupplier =
                             new FormDataParamValueParamProvider(extractorProvider);
                     bind(Bindings.service(valueSupplier).to(ValueParamProvider.class));
@@ -96,9 +103,12 @@ public class MultipartFeature implements Feature {
                             new ParamInjectionResolver<>(valueSupplier, FormDataParam.class, requestProvider)));
                 }
             });
+            // registering the resourceCleaningListener
             context.register(ResourceCleaningListener.class);
+            // registering the message body reader for incoming requests
             context.register(MultiPartMessageBodyReaderServer.class);
         } else {
+            // registering the message body reader for client in case a server respond a multipart
             context.register(MultiPartMessageBodyReaderClient.class);
 
         }
@@ -106,7 +116,7 @@ public class MultipartFeature implements Feature {
         context.register(new AbstractBinder() {
             @Override
             protected void configure() {
-
+                // this allows to get all paramconverters (default and custom ones available.
                 bind(new MultiPartParameterConverterProvider(
                             Values.lazy((Value<ParamConverterFactory>) () ->
                                     new ParamConverterFactory(
@@ -115,6 +125,8 @@ public class MultipartFeature implements Feature {
                     .to(MultiPartParameterConverterProvider.class);
             }
         });
+
+        // writer for multipart
         context.register(MultiPartMessageBodyWriter.class);
 
         return true;
