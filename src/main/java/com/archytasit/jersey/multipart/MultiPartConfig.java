@@ -46,13 +46,6 @@ public class MultiPartConfig {
     private long requestSizeLimit = -1;
     private CleanResourceMode cleanResourceMode = CleanResourceMode.ALWAYS;
     private Consumer<InputStream> requestSizeLimitAction = (is) -> {
-        if (is != null) {
-            try {
-                StreamUtils.toOutStream(is, new NullOutputStream());
-            } catch (IOException e) {
-                Logger.getLogger(InputStreamLimitCounter.class.getName()).log(Level.WARNING, "failed to read the remaining of request", e);
-            }
-        }
         throw new EntityTooLargeException();
     };
 

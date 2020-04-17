@@ -34,21 +34,29 @@ public class FormDataParamValueParamProvider  extends AbstractValueParamProvider
     protected Function<ContainerRequest, ?> createValueProvider(Parameter parameter) {
 
         final Class<?> rawType = parameter.getRawType();
-
+        // if the Parameter to resolve is an entity or unknown
         if (Parameter.Source.ENTITY == parameter.getSource() || Parameter.Source.UNKNOWN == parameter.getSource()) {
+            // if it is a requested Multipart :
             if (MultiPart.class.isAssignableFrom(rawType)) {
+                // return the raw Multipart provider
                 return new MultiPartEntityValueProvider();
             } else if (parameter.getAnnotation(FormDataParam.class) != null) {
+                // else we only deal with annotated @FormDataParam elements
                 if (List.class.isAssignableFrom(rawType) || Set.class.isAssignableFrom(rawType)) {
+                    // if it is a collection requested
                     final Class genericClazz = ReflectionHelper.getGenericTypeArgumentClasses(parameter.getType()).get(0);
                     if (FormDataBodyPart.class.isAssignableFrom(genericClazz)) {
+                        // if it is a FormDataBodyPart or inherited object, for collection
                         return new PartListValueProvider(parameter, genericClazz);
                     } else {
+                        // else we deal with MultivalueExtractor and/or ParamConverters and/or MessageBodyWorkers for collection
                         return new CollectionValueProvider(parameter, get(parameter));
                     }
                 } else if (FormDataBodyPart.class.isAssignableFrom(rawType)) {
+                    // if it is a FormDataBodyPart or inherited object
                     return new PartSingleValueProvider(parameter);
                 } else {
+                    // else we deal with MultivalueExtractor and/or ParamConverters and/or MessageBodyWorkers
                     return new SingleValueProvider(parameter, get(parameter));
                 }
             }

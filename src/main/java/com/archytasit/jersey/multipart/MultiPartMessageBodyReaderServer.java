@@ -50,16 +50,20 @@ public class MultiPartMessageBodyReaderServer extends MultiPartMessageBodyReader
     @Override
     public MultiPart readFrom(Class<MultiPart> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
 
+
+        // on the server side, we wrap the inputstream in a limiter, if a limit is configured
         InputStream contentStream  = entityStream;
         if (config.getRequestSizeLimit() > 0) {
             contentStream  = new InputStreamLimitCounter(config.getRequestSizeLimit(), entityStream, config.getRequestSizeLimitAction());
         }
-
         MultiPart multiPart = super.readFrom(type, genericType, annotations, mediaType, httpHeaders, contentStream);
-
-        resourceCleaner.trackResourceToClean(multiPart, config.getCleanResourceMode(), requestProvider.get());
-
         return multiPart;
+    }
+
+    @Override
+    protected void trackResourceForClean(FormDataBodyPart storedPart) {
+        // and we track the resources to clean
+        resourceCleaner.trackResourceToClean(storedPart, config.getCleanResourceMode(), requestProvider.get());
     }
 }
 

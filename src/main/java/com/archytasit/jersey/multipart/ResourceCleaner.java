@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * The type Resource cleaner.
+ * The Resource cleaner class
  */
 public class ResourceCleaner {
 
@@ -17,7 +17,7 @@ public class ResourceCleaner {
 
 
     /**
-     * Track resource to clean.
+     * Track a resource to be cleaned after request by storing it in the RequestContext.
      *
      * @param resourceToClean the resource to clean
      * @param cleanMode       the clean mode
@@ -35,7 +35,7 @@ public class ResourceCleaner {
 
 
     /**
-     * Clean request.
+     * Clean the resources stored in the request.
      *
      * @param request   the request
      * @param isSuccess the is success
